@@ -19,7 +19,7 @@ type Device interface {
 	Discover(interface{})
 	DiscoverOK(*ZtpLookupEntry)
 	DiscoverFail() DeviceReturnCode
-	Connect(interface{})
+	Connect(*msg.Connect)
 	ConnectOk(interface{})
 	ConnectFail(interface{}) DeviceReturnCode
 	ConnectRedirect(interface{}) DeviceReturnCode

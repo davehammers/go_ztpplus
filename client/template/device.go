@@ -91,7 +91,7 @@ func (dev *Device) DiscoverFail() (ret ztp.DeviceReturnCode) {
 //The state machine issues a
 //CONNECT_OK or CONNECT_FAIL function as a result of the connection
 //attempt.
-func (dev *Device) Connect(in interface{}) {
+func (dev *Device) Connect(connectMsg *msg.Connect) {
 }
 
 //The state machine executes this function during the CONNECT
