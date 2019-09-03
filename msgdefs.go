@@ -637,6 +637,19 @@ type Connect struct {
 	DeviceInfo      DeviceInfo      `json:"deviceInfo"`
 }
 
+type ConnectResponse struct {
+	Action        string `json:"action"`
+	StandyTimeout int    `json:"standyTimeout"`
+	Credentials   []struct {
+		Login    string `json:"login"`
+		Password string `json:"password"`
+	} `json:"credentials"`
+	Redirect struct {
+		Type string `json:"type"`
+		URI  string `json:"uri"`
+	} `json:"redirect"`
+}
+
 // I M A G E U P G R A D E
 type ImageUpgrade struct {
 	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock"`
