@@ -42,19 +42,19 @@ func flagSetup() {
 }
 
 func main() {
-	// Get device ID from the device.
-	// Here we just code a string for the template
-	devID := "12345-67890"
-
 	// create a new device instance
 	dev := NewDevice()
+	// Get device ID from the device.
+	// Here we just code a string for the template
+	dev.devID = "12345-67890"
+
 	if *deviceID != "" {
-		devID = *deviceID
+		dev.devID = *deviceID
 	}
 
 	// new FSM for our device instance
 	fsm := ztp.NewZtpClient(dev)
-	fsm.SetDeviceID(devID)
+	fsm.SetDeviceID(dev.devID)
 	fsm.SetDeviceType("switch")
 	//fsm.SetRebootEvent(rebootEvent)
 	fsm.SetController(*ctrlrIP)

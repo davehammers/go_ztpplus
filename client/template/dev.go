@@ -7,6 +7,7 @@ import (
 // The Device defines the information required by the FSM to manage a ZTP device instance
 // Additional information may be added below the comment for a device specific implementtion.
 type Device struct {
+	devID string
 
 	// add device specific data elements here
 }

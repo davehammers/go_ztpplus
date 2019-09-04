@@ -38,7 +38,9 @@ type ZtpClient struct {
 	devID         string
 	devType       string
 	rebootEvent   string
-	discoverRetry int                 // seconds before retrying discovery
+	discoverRetry int // seconds before retrying discovery
+	login         string
+	password      string
 	property      msg.ApPropertyBlock // this block gets used in every message
 
 	upgradeAssets []*msg.Assets
@@ -140,8 +142,8 @@ func (zc *ZtpClient) SetController(ctlr string) {
 	// insert the debug controller value at the front of the list
 	controller.addClientPrefix = true
 	controllerList = append([]ZtpLookupEntry{controller}, controllerList...)
-	controller.addClientPrefix = false
-	controllerList = append([]ZtpLookupEntry{controller}, controllerList...)
+	//controller.addClientPrefix = false
+	//controllerList = append([]ZtpLookupEntry{controller}, controllerList...)
 }
 
 func (zc *ZtpClient) SetDiscoverRetry(retry int) {

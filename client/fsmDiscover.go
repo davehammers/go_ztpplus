@@ -25,13 +25,11 @@ func (zc *ZtpClient) Discover() (state ZtpClientState) {
 	if DEBUG {
 		log.Println("Begin")
 	}
-	urlString := "https://%s%s/%sdevice/%s/"
 	for _, hostPort := range controllerList {
-		prefix := ""
+		url := fmt.Sprintf("https://%s%s/device/v1/", hostPort.host, hostPort.port)
 		if hostPort.addClientPrefix {
-			prefix = "Client/"
+			url = fmt.Sprintf("https://%s%s/Clients/device/v1/", hostPort.host, hostPort.port)
 		}
-		url := fmt.Sprintf(urlString, hostPort.host, hostPort.port, prefix, REST_Version)
 		if DEBUG {
 			log.Println(url + "discovery")
 		}
@@ -48,7 +46,7 @@ func (zc *ZtpClient) Discover() (state ZtpClientState) {
 			// discovery is successful
 			zc.device.DiscoverOK(&hostPort)
 			// build up the URL prefix for all other message types
-			zc.urlPrefix = fmt.Sprintf("%s%s/%s", url, zc.devType, zc.devID)
+			zc.urlPrefix = fmt.Sprintf("%s%s/%s/", url, zc.devType, zc.devID)
 			if DEBUG {
 				log.Println(zc.urlPrefix)
 			}
