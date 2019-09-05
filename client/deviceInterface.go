@@ -35,4 +35,5 @@ type Device interface {
 	Done(interface{}) DeviceReturnCode
 	ConnectionExpired(interface{}) DeviceReturnCode
 	GetSourceIP(interface{}) DeviceReturnCode
+	SendEvents(*msg.EventMsg) DeviceReturnCode
 }

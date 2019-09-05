@@ -51,9 +51,6 @@ type ZtpClient struct {
 	runningRetry  int // seconds before retrying running
 	login         string
 	password      string
-	property      msg.ApPropertyBlock // this block gets used in every message
-
-	upgradeAssets []*msg.Assets
 	state         ZtpClientState // keep track of the state machine
 	httpClient    *http.Client
 	device        Device // the device specific interfaces
@@ -171,10 +168,6 @@ func (zc *ZtpClient) SetDiscoverRetry(retry int) {
 
 func (zc *ZtpClient) SetConnectRetry(retry int) {
 	zc.connectRetry = retry
-}
-
-func (zc *ZtpClient) AddUpgradeAsset(deviceAsset *msg.Assets) {
-	zc.upgradeAssets = append(zc.upgradeAssets, deviceAsset)
 }
 
 func (zc *ZtpClient) StateMachine() {

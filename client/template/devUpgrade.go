@@ -36,6 +36,7 @@ import (
 //  via self.data.args.retry_interval.
 //
 func (dev *Device) UpgradeCheck(upgradeMsg *msg.ImageUpgrade) ztp.DeviceReturnCode {
+	upgradeMsg.ApPropertyBlock = *dev.property
 	upgradeMsg.Assets = make([]msg.Assets, 0)
 
 	asset := msg.Assets{

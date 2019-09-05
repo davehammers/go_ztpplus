@@ -27,7 +27,6 @@ func (zc *ZtpClient) Connect() (state ZtpClientState) {
 
 	// call the device routine to fill in the connect message
 	zc.device.Connect(&connectMsg)
-	zc.property = connectMsg.ApPropertyBlock
 
 	b, err := json.Marshal(connectMsg)
 	if err != nil {

@@ -22,6 +22,8 @@ func (dev *Device) Connect(connectMsg *msg.Connect) {
 	connectMsg.ApPropertyBlock.BpWiredMacaddr = "00:04:96:9B:B7:E8"
 	connectMsg.ApPropertyBlock.RuSwVersion = "1.2.3.4"
 	connectMsg.ApPropertyBlock.RuModel = "sim-template"
+	// keep a copy for future transactions
+	dev.property = &connectMsg.ApPropertyBlock
 
 	connectMsg.DeviceInfo.SysDescr = "template simulation for ztp"
 	connectMsg.DeviceInfo.SysUpTime = 128706300

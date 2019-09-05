@@ -15,7 +15,6 @@ func (zc *ZtpClient) Upgrade() (state ZtpClientState) {
 		log.Println("Begin")
 	}
 	upgradeMsg := msg.ImageUpgrade{}
-	upgradeMsg.ApPropertyBlock = zc.property
 
 	// ask device to fill in the assets that need upgrading
 	switch zc.device.UpgradeCheck(&upgradeMsg) {
@@ -47,11 +46,10 @@ func (zc *ZtpClient) Upgrade() (state ZtpClientState) {
 		log.Println(err)
 		return ZtpStateReUpgradePause
 	}
-    if DEBUG {
-		log.Println("StatusCode", resp.StatusCode)
+	if DEBUG {
 		x, _ := httputil.DumpResponse(resp, true)
 		log.Println(string(x))
-    }
+	}
 	switch resp.StatusCode {
 	case http.StatusOK:
 		// OK HTTP response, keep going
