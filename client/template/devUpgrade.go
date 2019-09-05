@@ -36,7 +36,7 @@ import (
 //  via self.data.args.retry_interval.
 //
 func (dev *Device) UpgradeCheck(in interface{}) ztp.DeviceReturnCode {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }
 
 //The state machine executes this function after receiving the
@@ -63,5 +63,5 @@ func (dev *Device) UpgradeCheck(in interface{}) ztp.DeviceReturnCode {
 //The state machine sends these events to Extreme Control and
 //transitions to CONFIG.
 func (dev *Device) Upgrade(in interface{}) (ret ztp.DeviceReturnCode, events *[]msg.Event) {
-	return ztp.DeviceReturnOk, nil
+	return ztp.DeviceReturnOK, nil
 }

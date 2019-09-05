@@ -71,7 +71,7 @@ func (dev *Device) Config(in interface{}) (events *[]msg.Event) {
 //waits for the self.data.args.error_interval to expire before
 //reconnecting to the Extreme Control service.
 func (dev *Device) PostConfig(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }
 
 //The state machine executes this function during the
@@ -88,7 +88,7 @@ func (dev *Device) PostConfig(in interface{}) (ret ztp.DeviceReturnCode) {
 //message to the Extreme Control service causes the state machine to
 //transition to CONNECT.
 func (dev *Device) ConfigOK(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }
 
 //The state machine executes this function during the
@@ -106,5 +106,5 @@ func (dev *Device) ConfigOK(in interface{}) (ret ztp.DeviceReturnCode) {
 //message to the Extreme Control service causes the state machine to
 //transition to CONNECT.
 func (dev *Device) ConfigFail(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }

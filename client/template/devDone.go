@@ -14,5 +14,5 @@ import (
 //A return code is not expected, and the execution of the state
 //machine completes after the application returns from the function.
 func (dev *Device) Done(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }

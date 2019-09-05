@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	msg "ztp"
 	ztp "ztp/client"
 )
@@ -19,18 +20,18 @@ import (
 func (dev *Device) Connect(connectMsg *msg.Connect) {
 	connectMsg.ApPropertyBlock.RuSerialNumber = dev.devID
 	connectMsg.ApPropertyBlock.BpWiredMacaddr = "00:04:96:9B:B7:E8"
-	connectMsg.ApPropertyBlock.RuSwVersion = "30.2.2.17"
-	connectMsg.ApPropertyBlock.RuModel = "X670G2-48x-4q"
+	connectMsg.ApPropertyBlock.RuSwVersion = "1.2.3.4"
+	connectMsg.ApPropertyBlock.RuModel = "sim-template"
 
-	connectMsg.DeviceInfo.SysDescr = "ExtremeXOS (X670G2-48x-4q) version 30.2.2.17 30.2.2.17 by release-manager on Thu Jul 18 15:25:58 EDT 2019"
+	connectMsg.DeviceInfo.SysDescr = "template simulation for ztp"
 	connectMsg.DeviceInfo.SysUpTime = 128706300
 	connectMsg.DeviceInfo.SysContact = "https://www.extremenetworks.com/support/"
-	connectMsg.DeviceInfo.SysName = "X670G2-48x-4q"
+	connectMsg.DeviceInfo.SysName = connectMsg.ApPropertyBlock.RuModel
 	connectMsg.DeviceInfo.SysObjectID = "1.3.6.1.4.1.1916.2.195"
 	connectMsg.DeviceInfo.OperatingSystem = "ExtremeXOS"
 	connectMsg.DeviceInfo.SerialNumber = dev.devID
 	connectMsg.DeviceInfo.MacAddr = connectMsg.ApPropertyBlock.BpWiredMacaddr
-	connectMsg.DeviceInfo.MgmtIPAddr = "10.68.69.180"
+	connectMsg.DeviceInfo.MgmtIPAddr = "10.10.10.1"
 	connectMsg.DeviceInfo.MgmtPort = "0"
 	//connectMsg.DeviceInfo.License.FeaturePacks = make([]string, 0)
 	//connectMsg.DeviceInfo.License.PortCapacityLicense = ""
@@ -49,7 +50,7 @@ func (dev *Device) Connect(connectMsg *msg.Connect) {
 //successful in connecting to the controller.
 
 //The state machine transitions to UPGRADE.
-func (dev *Device) ConnectOk(in interface{}) {
+func (dev *Device) ConnectOK(resp *http.Response, connectResponse *msg.ConnectResponse) {
 }
 
 //The state machine executes this function during the CONNECT
@@ -79,8 +80,8 @@ func (dev *Device) ConnectOk(in interface{}) {
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to
 //DONE.
-func (dev *Device) ConnectFail(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+func (dev *Device) ConnectFail(resp *http.Response) (ret ztp.DeviceReturnCode) {
+	return ztp.DeviceReturnOK
 }
 
 //The state machine executes this function during the CONNECT
@@ -106,6 +107,6 @@ func (dev *Device) ConnectFail(in interface{}) (ret ztp.DeviceReturnCode) {
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to
 //DONE.
-func (dev *Device) ConnectRedirect(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+func (dev *Device) ConnectRedirect(resp *http.Response, connectResponse *msg.ConnectResponse) (ret ztp.DeviceReturnCode) {
+	return ztp.DeviceReturnOK
 }

@@ -43,5 +43,5 @@ func (dev *Device) DiscoverOK(*ztp.ZtpLookupEntry) {
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to DONE.
 func (dev *Device) DiscoverFail() (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }

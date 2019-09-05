@@ -1,13 +1,14 @@
 package ztpclient
 
 import (
+	"net/http"
 	msg "ztp"
 )
 
 type DeviceReturnCode int
 
 const (
-	DeviceReturnOk DeviceReturnCode = 0 + iota
+	DeviceReturnOK DeviceReturnCode = 0 + iota
 	DeviceReturnRestart
 	DeviceReturnRetry
 	DeviceReturnFinish
@@ -20,9 +21,9 @@ type Device interface {
 	DiscoverOK(*ZtpLookupEntry)
 	DiscoverFail() DeviceReturnCode
 	Connect(*msg.Connect)
-	ConnectOk(interface{})
-	ConnectFail(interface{}) DeviceReturnCode
-	ConnectRedirect(interface{}) DeviceReturnCode
+	ConnectOK(*http.Response, *msg.ConnectResponse)
+	ConnectFail(*http.Response) DeviceReturnCode
+	ConnectRedirect(*http.Response, *msg.ConnectResponse) DeviceReturnCode
 	UpgradeCheck(interface{}) DeviceReturnCode
 	Upgrade(interface{}) (DeviceReturnCode, *[]msg.Event)
 	ConfigUpdate(interface{})

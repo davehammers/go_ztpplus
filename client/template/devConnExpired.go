@@ -19,5 +19,5 @@ import (
 //A return code is not expected, and the state machine transitions to
 //CONNECT.
 func (dev *Device) ConnectionExpired(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }

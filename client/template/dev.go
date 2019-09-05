@@ -28,5 +28,5 @@ func NewDevice() *Device {
 //The override routine SHALL take two parameters, an IP address and
 //a port number.
 func (dev *Device) GetSourceIP(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }

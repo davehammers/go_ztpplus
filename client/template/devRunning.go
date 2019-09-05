@@ -33,5 +33,5 @@ import (
 //A failure in the REST API attempt with the Extreme Control
 //service causes the state machine to transition to CONNECT.
 func (dev *Device) Running(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOk
+	return ztp.DeviceReturnOK
 }

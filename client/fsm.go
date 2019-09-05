@@ -12,8 +12,9 @@ import (
 
 // Environment variable ztpclientDEBUG=1 sets the package DEBUG=true
 const (
-	EnvDebug            = "ztpclientDEBUG"
-	DefaultRetrySeconds = 30
+	EnvDebug              = "ztpclientDEBUG"
+	DefaultRetrySeconds   = 30
+	DefaultRunningSeconds = 60 * 5
 )
 
 type ZtpClientState int
@@ -21,12 +22,17 @@ type ZtpClientState int
 const (
 	ZtpStateInit ZtpClientState = 1 + iota
 	ZtpStateDiscover
+	ZtpStateReDiscoverPause // pause before returning to ZtpStateDiscover
 	ZtpStateConnect
+	ZtpStateReConnectPause // pause before returning to ZtpStateConnect
 	ZtpStateUpgrade
+	ZtpStateReUpgradePause // pause before returning to ZtpStateUpgrade
 	ZtpStateConfig
+	ZtpStateReConfigPause // pause before returning to ZtpStateConfig
 	ZtpStatePostConfig
 	ZtpStateConfigAck
 	ZtpStateRunning
+	ZtpStateReRunningPause // pause before returning to ZtpStateRunning
 	ZtpStateDone
 )
 
@@ -39,6 +45,10 @@ type ZtpClient struct {
 	devType       string
 	rebootEvent   string
 	discoverRetry int // seconds before retrying discovery
+	connectRetry  int // seconds before retrying connect
+	upgradeRetry  int // seconds before retrying upgrade
+	configRetry   int // seconds before retrying config
+	runningRetry  int // seconds before retrying running
 	login         string
 	password      string
 	property      msg.ApPropertyBlock // this block gets used in every message
@@ -92,6 +102,10 @@ func NewZtpClient(dev Device) *ZtpClient {
 		state:         ZtpStateInit,
 		device:        dev,
 		discoverRetry: DefaultRetrySeconds,
+		connectRetry:  DefaultRetrySeconds,
+		upgradeRetry:  DefaultRetrySeconds,
+		configRetry:   DefaultRetrySeconds,
+		runningRetry:  DefaultRunningSeconds,
 	}
 
 	zc.httpClient.Transport = &http.Transport{
@@ -102,12 +116,17 @@ func NewZtpClient(dev Device) *ZtpClient {
 	zc.fsm = make(map[ZtpClientState]func() ZtpClientState)
 	zc.fsm[ZtpStateInit] = zc.Init
 	zc.fsm[ZtpStateDiscover] = zc.Discover
+	zc.fsm[ZtpStateReDiscoverPause] = zc.ReDiscoverPause
 	zc.fsm[ZtpStateConnect] = zc.Connect
+	zc.fsm[ZtpStateReConnectPause] = zc.ReConnectPause
 	zc.fsm[ZtpStateUpgrade] = zc.Upgrade
+	zc.fsm[ZtpStateReUpgradePause] = zc.ReUpgradePause
 	zc.fsm[ZtpStateConfig] = zc.Config
+	zc.fsm[ZtpStateReConfigPause] = zc.ReConfigPause
 	zc.fsm[ZtpStatePostConfig] = zc.PostConfig
 	zc.fsm[ZtpStateConfigAck] = zc.ConfigAck
 	zc.fsm[ZtpStateRunning] = zc.Running
+	zc.fsm[ZtpStateReRunningPause] = zc.ReRunningPause
 	zc.fsm[ZtpStateDone] = zc.Done
 
 	return zc
@@ -147,7 +166,11 @@ func (zc *ZtpClient) SetController(ctlr string) {
 }
 
 func (zc *ZtpClient) SetDiscoverRetry(retry int) {
-	zc.discoverRetry = DefaultRetrySeconds
+	zc.discoverRetry = retry
+}
+
+func (zc *ZtpClient) SetConnectRetry(retry int) {
+	zc.connectRetry = retry
 }
 
 func (zc *ZtpClient) AddUpgradeAsset(deviceAsset *msg.Assets) {

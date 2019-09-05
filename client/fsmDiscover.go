@@ -61,7 +61,11 @@ func (zc *ZtpClient) Discover() (state ZtpClientState) {
 		return ZtpStateDone
 	}
 
-	// pause here before trying again
+	return ZtpStateReDiscoverPause
+}
+
+func (zc *ZtpClient) ReDiscoverPause() (state ZtpClientState) {
+	// pause here before trying discover again
 	time.Sleep(time.Second * time.Duration(zc.discoverRetry))
 	return ZtpStateDiscover
 }
