@@ -24,7 +24,7 @@ type Device interface {
 	ConnectOK(*http.Response, *msg.ConnectResponse)
 	ConnectFail(*http.Response) DeviceReturnCode
 	ConnectRedirect(*http.Response, *msg.ConnectResponse) DeviceReturnCode
-	UpgradeCheck(interface{}) DeviceReturnCode
+	UpgradeCheck(*msg.ImageUpgrade) DeviceReturnCode
 	Upgrade(interface{}) (DeviceReturnCode, *[]msg.Event)
 	ConfigUpdate(interface{})
 	Config(interface{}) (events *[]msg.Event)

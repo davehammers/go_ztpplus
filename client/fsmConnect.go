@@ -59,9 +59,9 @@ func (zc *ZtpClient) Connect() (state ZtpClientState) {
 		return ZtpStateReDiscoverPause
 	}
 	if DEBUG {
+		log.Println("StatusCode", resp.StatusCode)
 		x, _ := httputil.DumpResponse(resp, true)
 		log.Println(string(x))
-        log.Println("StatusCode",resp.StatusCode)
 	}
 	switch resp.StatusCode {
 	case http.StatusOK, http.StatusCreated:
@@ -87,7 +87,7 @@ func (zc *ZtpClient) Connect() (state ZtpClientState) {
 	if DEBUG {
 		log.Printf("%+v\n", connectResp)
 	}
-	// if new auth is provided, decode the login/password provided 
+	// if new auth is provided, decode the login/password provided
 	if connectResp.Credentials.Login != "" && connectResp.Credentials.Password != "" {
 		zc.login = des3Decrypt(connectResp.Credentials.Login)
 		zc.password = des3Decrypt(connectResp.Credentials.Password)
@@ -97,7 +97,7 @@ func (zc *ZtpClient) Connect() (state ZtpClientState) {
 	}
 
 	// is there a redirected to a different controller
-    // ignore case when comparing strings
+	// ignore case when comparing strings
 	if strings.EqualFold(connectResp.Action, "redirect") {
 		if strings.EqualFold(connectResp.Redirect.Type, "https") {
 			if connectResp.Redirect.URI != "" {

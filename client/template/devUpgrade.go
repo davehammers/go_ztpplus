@@ -35,7 +35,23 @@ import (
 //  Informs the state machine to wait a period of time, configurable
 //  via self.data.args.retry_interval.
 //
-func (dev *Device) UpgradeCheck(in interface{}) ztp.DeviceReturnCode {
+func (dev *Device) UpgradeCheck(upgradeMsg *msg.ImageUpgrade) ztp.DeviceReturnCode {
+	upgradeMsg.Assets = make([]msg.Assets, 0)
+
+	asset := msg.Assets{
+		AssetName:    "sim",
+		AssetVersion: "1.1.1.1",
+		AssetType:    "FIRMWARE",
+	}
+	upgradeMsg.Assets = append(upgradeMsg.Assets, asset)
+
+	asset = msg.Assets{
+		AssetName:    "cloud_connector",
+		AssetVersion: "3.3.2.1",
+		AssetType:    "XMOD",
+	}
+	upgradeMsg.Assets = append(upgradeMsg.Assets, asset)
+
 	return ztp.DeviceReturnOK
 }
 

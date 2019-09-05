@@ -206,3 +206,6 @@ func (zc *ZtpClient) StateMachine() {
 		log.Println("End")
 	}
 }
+func (zc *ZtpClient) SendEvents(events *[]msg.Event) (err error) {
+	return nil
+}

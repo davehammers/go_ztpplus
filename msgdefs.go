@@ -656,6 +656,18 @@ type ImageUpgrade struct {
 	Assets          []Assets        `json:"assets,omitempty"`
 }
 
+type ImageUpgradeResponse struct {
+	ImageUpgradeBlock []struct {
+		Upgrade      bool   `json:"upgrade,omitempty"`
+		URI          string `json:"uri,omitempty"`
+		Timeout      int    `json:"timeout,omitempty"`
+		AssetName    string `json:"assetName,omitempty"`
+		AssetVersion string `json:"assetVersion,omitempty"`
+		AssetType    string `json:"assetType,omitempty"`
+		AssetSize    int    `json:"assetSize,omitempty"`
+	} `json:"imageUpgradeBlock,omitempty"`
+}
+
 // C O N F I G U R A T I O N
 type Configuration struct {
 	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
