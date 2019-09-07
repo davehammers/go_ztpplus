@@ -1,47 +1,60 @@
 package main
 
 import (
+	"log"
+	"net"
+	"net/http"
+	msg "ztp"
 	ztp "ztp/client"
 )
 
 //The state machine executes this function during the DISCOVER
-//phase.  The function is issued prior to auto discovering the
-//Extreme Control service. The auto discovery mechanism attempts to
-//locate the Extreme Control service on the local domain first, and,
-//if NOT FOUND, attempts to locate an Extreme Control service in the
-//cloud.
+//phase.  The function is issued prior to auto discovering the controller.
+//The Discover() function returns the list of controller domain names/ip address
+//for the state machine to look for.
 //
-//The application MAY provide a fallback controller by setting
-//self.data.args.controller_addr.  If the auto discovery mechanism
-//fails to find the Extreme Control service, the state machine will
-//use the static controller defined by the application.
 //
-//The state machine transitions
-//CONNECT after discovering the Extreme Control service. If
-//there is an error in the discovery process, the state machine stays
-//in DISCOVER and continuously attempts to locate the Extreme
-//Control service.  The application function is executed on each
-//iteration.
-func (dev *Device) Discover(in interface{}) {
+func (dev Device) Discover() (controllerList *[]ztp.ZtpLookupEntry) {
+	//DNS controller names
+	var err error
+	controller := ztp.ZtpLookupEntry{}
+	c := make([]ztp.ZtpLookupEntry, 0)
+	controllerList = &c
+	// if a command line override was provided, look for that entry first
+	if *debugCtrlrIP != "" {
+		controller.Host, controller.Port, err = net.SplitHostPort(*debugCtrlrIP)
+		if err == nil {
+			if controller.Port != "" {
+				controller.Port = ":" + controller.Port
+			}
+			// prepend the /Client URI
+			controller.AddClientPrefix = true
+			// insert the debug controller value at the front of the list
+			*controllerList = append(*controllerList, controller)
+			controller.AddClientPrefix = false
+			*controllerList = append(*controllerList, controller)
+		} else {
+			log.Println(err)
+		}
+	}
+	*controllerList = append(*controllerList, ztp.ZtpLookupEntry{"extremecontrol", ":8443", true})
+	*controllerList = append(*controllerList, ztp.ZtpLookupEntry{"extremecontrol.extremenetworks.com", ":8443", true})
+	msg.DumpJson(controllerList)
+	return
 }
 
-func (dev *Device) DiscoverOK(*ztp.ZtpLookupEntry) {
-}
-
-//The state machine executes this function during the DISCOVER
-//phase.  The function is issued after the state machine has failed
-//to discover the Extreme Control service.
+//The state machine calls the DiscoverResponse function with the HTTP response
+//and ZtpLookupEntry of controller entry found after each pass through the controller list
+//provided. If no controller is found, discoverMsg is nil.
 //
-//The state machine expects a return code, but it is not required.
-//Unknown return codes are treated as OK.
-//
-//Return
-//
-//OK:
-//Informs the state machine to continue its discovery operation.
+//OK: The state machine will continue to look for
+//the domain names/ip address provided until at least one controller is found.
+//The state maching continues to the the CONNECT state
 //
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to DONE.
-func (dev *Device) DiscoverFail() (ret ztp.DeviceReturnCode) {
+func (dev Device) DiscoverResponse(resp *http.Response, discoverResponseMsg *ztp.ZtpLookupEntry) (ret ztp.DeviceReturnCode) {
+	msg.DumpJson(discoverResponseMsg)
+	dev.data.controller = discoverResponseMsg
 	return ztp.DeviceReturnOK
 }

@@ -14,5 +14,5 @@ package main
 //
 //A return code of OK, and the state machine transitions
 //to DISCOVER.
-func (dev *Device) Init() {
+func (dev Device) Init() {
 }

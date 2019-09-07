@@ -2,9 +2,10 @@ package ztpclient
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"log"
-	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 	msg "ztp"
@@ -17,6 +18,7 @@ const (
 	DefaultRunningSeconds = 60 * 5
 )
 
+// FSM states
 type ZtpClientState int
 
 const (
@@ -30,53 +32,84 @@ const (
 	ZtpStateConfig
 	ZtpStateReConfigPause // pause before returning to ZtpStateConfig
 	ZtpStatePostConfig
+	ZtpStateRePostConfigPause // pause before returning to ZtpStatePostConfig
 	ZtpStateConfigAck
 	ZtpStateRunning
 	ZtpStateReRunningPause // pause before returning to ZtpStateRunning
 	ZtpStateDone
 )
 
-const (
-	REST_Version = "v1"
-)
-
 type ZtpClient struct {
-	devID         string
-	devType       string
-	rebootEvent   string
-	discoverRetry int // seconds before retrying discovery
-	connectRetry  int // seconds before retrying connect
-	upgradeRetry  int // seconds before retrying upgrade
-	configRetry   int // seconds before retrying config
-	runningRetry  int // seconds before retrying running
-	login         string
-	password      string
-	state         ZtpClientState // keep track of the state machine
-	httpClient    *http.Client
-	device        Device // the device specific interfaces
-	urlPrefix     string // Once discovered the URL prefix is the same for all transactions
-	fsm           map[ZtpClientState]func() ZtpClientState
+	Device          Device // the device specific interfaces
+	devID           string
+	devType         string
+	rebootEvent     string
+	discoverRetry   int // seconds before retrying discovery
+	connectRetry    int // seconds before retrying connect
+	upgradeRetry    int // seconds before retrying upgrade
+	configRetry     int // seconds before retrying config
+	runningRetry    int // seconds before retrying running
+	eventRetry      int // seconds before retrying running
+	postConfigRetry int // seconds before retrying postConfig
+	login           string
+	password        string
+	httpClient      *http.Client
+	urlPrefix       string // Once discovered the URL prefix is the same for all transactions
+	// [state] function table
+	fsm map[ZtpClientState]func(*ZtpClient) ZtpClientState
+}
+
+// create a new ZTP client instance
+func NewZtpClient() *ZtpClient {
+	zc := &ZtpClient{
+		devType:         "switch", // default type
+		discoverRetry:   DefaultRetrySeconds,
+		connectRetry:    DefaultRetrySeconds,
+		upgradeRetry:    DefaultRetrySeconds,
+		configRetry:     DefaultRetrySeconds,
+		runningRetry:    DefaultRunningSeconds,
+		eventRetry:      DefaultRetrySeconds,
+		postConfigRetry: DefaultRetrySeconds,
+		fsm: map[ZtpClientState]func(*ZtpClient) ZtpClientState{
+			ZtpStateInit:              (*ZtpClient).Init,
+			ZtpStateDiscover:          (*ZtpClient).Discover,
+			ZtpStateReDiscoverPause:   (*ZtpClient).ReDiscoverPause,
+			ZtpStateConnect:           (*ZtpClient).Connect,
+			ZtpStateReConnectPause:    (*ZtpClient).ReConnectPause,
+			ZtpStateUpgrade:           (*ZtpClient).Upgrade,
+			ZtpStateReUpgradePause:    (*ZtpClient).ReUpgradePause,
+			ZtpStateConfig:            (*ZtpClient).Config,
+			ZtpStateReConfigPause:     (*ZtpClient).ReConfigPause,
+			ZtpStatePostConfig:        (*ZtpClient).PostConfig,
+			ZtpStateRePostConfigPause: (*ZtpClient).RePostConfigPause,
+			ZtpStateConfigAck:         (*ZtpClient).ConfigAck,
+			ZtpStateRunning:           (*ZtpClient).Running,
+			ZtpStateReRunningPause:    (*ZtpClient).ReRunningPause,
+			ZtpStateDone:              (*ZtpClient).Done,
+		},
+		httpClient: &http.Client{
+			Timeout: time.Second * 20,
+			Transport: &http.Transport{
+				MaxIdleConnsPerHost: 10,
+				TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
+			},
+		},
+	}
+
+	return zc
 }
 
 type ZtpLookupEntry struct {
-	host            string
-	port            string
-	addClientPrefix bool
+	Host            string
+	Port            string
+	AddClientPrefix bool
 }
 
 //DEBUG can be used during development to output log messages
 var DEBUG = false
 
-var (
-	//DNS controller names
-	controllerList = []ZtpLookupEntry{
-		ZtpLookupEntry{"extremecontrol", ":8443", true},
-		ZtpLookupEntry{"extremecontrol.extremenetworks.com", ":8443", true},
-		//ZtpLookupEntry{"devices.extremenetworks.com", ""},
-	}
-)
-
 func init() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	envSetup()
 }
 
@@ -91,44 +124,6 @@ func envSetup() {
 	}
 }
 
-// create a new ZTP client instance
-func NewZtpClient(dev Device) *ZtpClient {
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	zc := &ZtpClient{
-		httpClient:    &http.Client{Timeout: time.Second * 20},
-		state:         ZtpStateInit,
-		device:        dev,
-		discoverRetry: DefaultRetrySeconds,
-		connectRetry:  DefaultRetrySeconds,
-		upgradeRetry:  DefaultRetrySeconds,
-		configRetry:   DefaultRetrySeconds,
-		runningRetry:  DefaultRunningSeconds,
-	}
-
-	zc.httpClient.Transport = &http.Transport{
-		MaxIdleConnsPerHost: 10,
-		TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
-	}
-
-	zc.fsm = make(map[ZtpClientState]func() ZtpClientState)
-	zc.fsm[ZtpStateInit] = zc.Init
-	zc.fsm[ZtpStateDiscover] = zc.Discover
-	zc.fsm[ZtpStateReDiscoverPause] = zc.ReDiscoverPause
-	zc.fsm[ZtpStateConnect] = zc.Connect
-	zc.fsm[ZtpStateReConnectPause] = zc.ReConnectPause
-	zc.fsm[ZtpStateUpgrade] = zc.Upgrade
-	zc.fsm[ZtpStateReUpgradePause] = zc.ReUpgradePause
-	zc.fsm[ZtpStateConfig] = zc.Config
-	zc.fsm[ZtpStateReConfigPause] = zc.ReConfigPause
-	zc.fsm[ZtpStatePostConfig] = zc.PostConfig
-	zc.fsm[ZtpStateConfigAck] = zc.ConfigAck
-	zc.fsm[ZtpStateRunning] = zc.Running
-	zc.fsm[ZtpStateReRunningPause] = zc.ReRunningPause
-	zc.fsm[ZtpStateDone] = zc.Done
-
-	return zc
-}
-
 func (zc *ZtpClient) SetDeviceID(devID string) {
 	zc.devID = devID
 }
@@ -141,27 +136,6 @@ func (zc *ZtpClient) SetRebootEvent(rebootEvent string) {
 	zc.rebootEvent = rebootEvent
 }
 
-func (zc *ZtpClient) SetController(ctlr string) {
-	var err error
-	var controller ZtpLookupEntry
-	if ctlr == "" {
-		return
-	}
-	controller.host, controller.port, err = net.SplitHostPort(ctlr)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	if controller.port != "" {
-		controller.port = ":" + controller.port
-	}
-	// insert the debug controller value at the front of the list
-	controller.addClientPrefix = true
-	controllerList = append([]ZtpLookupEntry{controller}, controllerList...)
-	//controller.addClientPrefix = false
-	//controllerList = append([]ZtpLookupEntry{controller}, controllerList...)
-}
-
 func (zc *ZtpClient) SetDiscoverRetry(retry int) {
 	zc.discoverRetry = retry
 }
@@ -169,36 +143,83 @@ func (zc *ZtpClient) SetDiscoverRetry(retry int) {
 func (zc *ZtpClient) SetConnectRetry(retry int) {
 	zc.connectRetry = retry
 }
+func (zc *ZtpClient) SetUpgradeRetry(retry int) {
+	zc.upgradeRetry = retry
+}
+
+func (zc *ZtpClient) SetConfigRetry(retry int) {
+	zc.configRetry = retry
+}
+
+func (zc *ZtpClient) SetRunningRetry(retry int) {
+	zc.runningRetry = retry
+}
+
+func (zc *ZtpClient) SetEventRetry(retry int) {
+	zc.eventRetry = retry
+}
+func (zc *ZtpClient) SetLogin(login string) {
+	zc.login = login
+	//log.Println("login", zc.login)
+}
+func (zc *ZtpClient) SetPassword(password string) {
+	zc.password = password
+	//log.Println("password", zc.password)
+}
+func (zc *ZtpClient) SetRedirect(uri string) {
+	if u, err := url.Parse(zc.urlPrefix); err == nil {
+		u.Host = uri
+		zc.urlPrefix = u.String()
+	}
+}
+
+func (zc *ZtpClient) SendRequest(r *http.Request) (resp *http.Response, body *[]byte, err error) {
+	r.SetBasicAuth(zc.login, zc.password)
+	r.Header.Add("Content-type", "application/json")
+	msg.DumpReqURL(r)
+	//msg.DumpRequest(r)
+	resp, err = zc.httpClient.Do(r)
+
+	if err != nil {
+		log.Println(err)
+	} else {
+		//msg.DumpResponse(resp)
+		var i interface{}
+		log.Println("HTTP Response code", resp.StatusCode)
+		json.NewDecoder(resp.Body).Decode(&i)
+		b, err := json.Marshal(i)
+		if err == nil {
+			log.Println(string(b))
+			body = &b
+		}
+	}
+	return
+}
 
 func (zc *ZtpClient) StateMachine() {
-	if DEBUG {
-		log.Println("Begin")
-	}
+	state := ZtpStateInit
 	for {
-		if zc.state == ZtpStateDone {
+		if state == ZtpStateDone {
 			break
 		}
 		if DEBUG {
-			log.Println("Current State", zc.state)
+			log.Println("Current State", state)
 		}
-		f, ok := zc.fsm[zc.state]
+		f, ok := zc.fsm[state]
 		if ok {
-			zc.state = f()
+			state = f(zc)
 			if DEBUG {
-				log.Println("Next State", zc.state)
+				log.Println("Next State", state)
 			}
 			continue
 		}
 		// if the state is unknow, break out of the for loop and return
 		if DEBUG {
-			log.Println("Unknown state", zc.state)
+			log.Println("Unknown state", state)
 		}
 		break
 	}
 	if DEBUG {
 		log.Println("End")
 	}
-}
-func (zc *ZtpClient) SendEvents(events *[]msg.Event) (err error) {
-	return nil
 }

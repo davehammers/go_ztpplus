@@ -22,29 +22,28 @@ import (
 //mechanism fails.  The fallback controller is configured by setting the
 //self.data.args.controller_addr variable.
 func (zc *ZtpClient) Discover() (state ZtpClientState) {
-	if DEBUG {
-		log.Println("Begin")
-	}
-	for _, hostPort := range controllerList {
-		url := fmt.Sprintf("https://%s%s/device/v1/", hostPort.host, hostPort.port)
-		if hostPort.addClientPrefix {
-			url = fmt.Sprintf("https://%s%s/Clients/device/v1/", hostPort.host, hostPort.port)
+	var resp *http.Response
+	var err error
+	//get the list of controllers from the platform
+	controllerList := zc.Device.Discover()
+	for _, hostPort := range *controllerList {
+		url := fmt.Sprintf("https://%s%s/device/v1/", hostPort.Host, hostPort.Port)
+		if hostPort.AddClientPrefix {
+			url = fmt.Sprintf("https://%s%s/Clients/device/v1/", hostPort.Host, hostPort.Port)
 		}
 		if DEBUG {
 			log.Println(url + "discovery")
 		}
-		resp, err := zc.httpClient.Get(url + "discovery")
+		resp, err = zc.httpClient.Get(url + "discovery")
 		if err != nil {
-			if DEBUG {
-				log.Println(err)
-			}
+			log.Println(err)
 			continue
 		}
 
 		switch resp.StatusCode {
 		case http.StatusOK, http.StatusNotFound:
 			// discovery is successful
-			zc.device.DiscoverOK(&hostPort)
+			zc.Device.DiscoverResponse(resp, &hostPort)
 			// build up the URL prefix for all other message types
 			zc.urlPrefix = fmt.Sprintf("%s%s/%s/", url, zc.devType, zc.devID)
 			if DEBUG {
@@ -56,7 +55,7 @@ func (zc *ZtpClient) Discover() (state ZtpClientState) {
 		}
 	}
 	// discovery failed
-	switch zc.device.DiscoverFail() {
+	switch zc.Device.DiscoverResponse(resp, nil) {
 	case DeviceReturnFinish:
 		return ZtpStateDone
 	}

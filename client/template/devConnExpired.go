@@ -1,7 +1,7 @@
 package main
 
 import (
-	ztp "ztp/client"
+//ztp "ztp/client"
 )
 
 //The state machine executes this function when the transmission of
@@ -18,6 +18,5 @@ import (
 //
 //A return code is not expected, and the state machine transitions to
 //CONNECT.
-func (dev *Device) ConnectionExpired(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOK
+func (dev Device) ConnectionExpired() {
 }

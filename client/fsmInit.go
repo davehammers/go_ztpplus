@@ -1,8 +1,6 @@
 package ztpclient
 
-import (
-	"log"
-)
+import ()
 
 //This routine performs the 'INIT' state actions.
 //
@@ -11,10 +9,7 @@ import (
 //
 //Adds the ztpclient to the upgrade asset list.
 func (zc *ZtpClient) Init() (state ZtpClientState) {
-	if DEBUG {
-		log.Println("Begin")
-	}
 
-	zc.device.Init()
+	zc.Device.Init()
 	return ZtpStateDiscover
 }

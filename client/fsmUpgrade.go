@@ -5,22 +5,15 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"time"
 	msg "ztp"
 )
 
 func (zc *ZtpClient) Upgrade() (state ZtpClientState) {
-	if DEBUG {
-		log.Println("Begin")
-	}
 	upgradeMsg := msg.ImageUpgrade{}
 
 	// ask device to fill in the assets that need upgrading
-	switch zc.device.UpgradeCheck(&upgradeMsg) {
-	case DeviceReturnRetry:
-		return ZtpStateReUpgradePause
-	}
+	zc.Device.Upgrade(&upgradeMsg)
 
 	b, err := json.Marshal(upgradeMsg)
 	if err != nil {
@@ -33,52 +26,32 @@ func (zc *ZtpClient) Upgrade() (state ZtpClientState) {
 		log.Println(err)
 		return ZtpStateReConnectPause
 	}
-	if DEBUG {
-		x, _ := httputil.DumpRequest(r, true)
-		log.Println(string(x))
-	}
 
-	// use initial constant for auth
-	r.SetBasicAuth(zc.login, zc.password)
-	r.Header.Add("Content-type", "application/json")
-	resp, err := zc.httpClient.Do(r)
+	resp, body, err := zc.SendRequest(r)
 	if err != nil {
+		// networking issue
 		log.Println(err)
-		return ZtpStateReUpgradePause
+		return ZtpStateReConnectPause
 	}
-	if DEBUG {
-		x, _ := httputil.DumpResponse(resp, true)
-		log.Println(string(x))
+	// unmarshal the response if present
+	upgradeResp := &msg.ImageUpgradeResponse{}
+	if body != nil {
+		err = json.Unmarshal(*body, upgradeResp)
 	}
 	switch resp.StatusCode {
 	case http.StatusOK:
-		// OK HTTP response, keep going
-	default:
-		return ZtpStateReConnectPause
 	}
 
-	// unmarshal the response
-	upgradeResp := msg.ConnectResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(&upgradeResp); err != nil {
-		log.Println(err)
-		return ZtpStateReConnectPause
-	}
-	ret, events := zc.device.Upgrade(&upgradeResp)
-	switch ret {
+	switch zc.Device.UpgradeResponse(err, resp, upgradeResp) {
 	case DeviceReturnOK:
-		if events != nil {
-			zc.SendEvents(events)
-		}
+		zc.SendEvents()
 		return ZtpStateConfig
-	//case DeviceReturnRestart:
+	case DeviceReturnRestart:
 	case DeviceReturnRetry:
 		return ZtpStateReUpgradePause
 	case DeviceReturnFinish:
 		return ZtpStateDone
-	case DeviceReturnDone:
-		return ZtpStateDone
-	default:
-		return ZtpStateReUpgradePause
+	case DeviceReturnAbort:
 	}
 
 	return ZtpStateConfig

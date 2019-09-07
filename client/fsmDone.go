@@ -1,13 +1,8 @@
 package ztpclient
 
-import (
-	"log"
-)
+import ()
 
 func (zc *ZtpClient) Done() (state ZtpClientState) {
-	if DEBUG {
-		log.Println("Begin")
-	}
 
 	state = ZtpStateDone
 

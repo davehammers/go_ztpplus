@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+	"net/http"
 	msg "ztp"
 	ztp "ztp/client"
 )
@@ -35,8 +37,8 @@ import (
 //  Informs the state machine to wait a period of time, configurable
 //  via self.data.args.retry_interval.
 //
-func (dev *Device) UpgradeCheck(upgradeMsg *msg.ImageUpgrade) ztp.DeviceReturnCode {
-	upgradeMsg.ApPropertyBlock = *dev.property
+func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
+	upgradeMsg.ApPropertyBlock = *dev.data.property
 	upgradeMsg.Assets = make([]msg.Assets, 0)
 
 	asset := msg.Assets{
@@ -52,8 +54,7 @@ func (dev *Device) UpgradeCheck(upgradeMsg *msg.ImageUpgrade) ztp.DeviceReturnCo
 		AssetType:    "XMOD",
 	}
 	upgradeMsg.Assets = append(upgradeMsg.Assets, asset)
-
-	return ztp.DeviceReturnOK
+	msg.DumpJson(upgradeMsg)
 }
 
 //The state machine executes this function after receiving the
@@ -79,6 +80,31 @@ func (dev *Device) UpgradeCheck(upgradeMsg *msg.ImageUpgrade) ztp.DeviceReturnCo
 //A list of ConnectorEvents:
 //The state machine sends these events to Extreme Control and
 //transitions to CONFIG.
-func (dev *Device) Upgrade(in interface{}) (ret ztp.DeviceReturnCode, events *[]msg.Event) {
-	return ztp.DeviceReturnOK, nil
+func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeResponse *msg.ImageUpgradeResponse) (ret ztp.DeviceReturnCode) {
+	if err != nil {
+		log.Println(err)
+		return ztp.DeviceReturnRetry
+	}
+	switch resp.StatusCode {
+	case http.StatusOK:
+	default:
+		return ztp.DeviceReturnRetry
+	}
+	// platform updates assets in the upgradeResponse
+	msg.DumpJson(upgradeResponse)
+	for _, image := range upgradeResponse.ImageUpgradeBlock {
+		if image.Upgrade {
+			log.Println("Upgrading")
+			msg.DumpJson(image)
+			// device TODO
+		} else {
+			log.Println("NOT Upgrading")
+			msg.DumpJson(image)
+		}
+	}
+	//  ztp.DeviceReturnOK - Upgrade is successful, continue
+	//  ztp.DeviceReturnRetry - something went wrong, ask to upgrade again
+	//  ztp.DeviceReturnFinish - Only upgrade, nothing more
+	//return ztp.DeviceReturnFinish
+	return ztp.DeviceReturnOK
 }

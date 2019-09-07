@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"strings"
 	msg "ztp"
 	ztp "ztp/client"
 )
@@ -17,13 +19,13 @@ import (
 //The state machine issues a
 //CONNECT_OK or CONNECT_FAIL function as a result of the connection
 //attempt.
-func (dev *Device) Connect(connectMsg *msg.Connect) {
-	connectMsg.ApPropertyBlock.RuSerialNumber = dev.devID
+func (dev Device) Connect(connectMsg *msg.Connect) {
+	connectMsg.ApPropertyBlock.RuSerialNumber = dev.data.devID
 	connectMsg.ApPropertyBlock.BpWiredMacaddr = "00:04:96:9B:B7:E8"
 	connectMsg.ApPropertyBlock.RuSwVersion = "1.2.3.4"
 	connectMsg.ApPropertyBlock.RuModel = "sim-template"
 	// keep a copy for future transactions
-	dev.property = &connectMsg.ApPropertyBlock
+	dev.data.property = &connectMsg.ApPropertyBlock
 
 	connectMsg.DeviceInfo.SysDescr = "template simulation for ztp"
 	connectMsg.DeviceInfo.SysUpTime = 128706300
@@ -31,7 +33,7 @@ func (dev *Device) Connect(connectMsg *msg.Connect) {
 	connectMsg.DeviceInfo.SysName = connectMsg.ApPropertyBlock.RuModel
 	connectMsg.DeviceInfo.SysObjectID = "1.3.6.1.4.1.1916.2.195"
 	connectMsg.DeviceInfo.OperatingSystem = "ExtremeXOS"
-	connectMsg.DeviceInfo.SerialNumber = dev.devID
+	connectMsg.DeviceInfo.SerialNumber = dev.data.devID
 	connectMsg.DeviceInfo.MacAddr = connectMsg.ApPropertyBlock.BpWiredMacaddr
 	connectMsg.DeviceInfo.MgmtIPAddr = "10.10.10.1"
 	connectMsg.DeviceInfo.MgmtPort = "0"
@@ -45,6 +47,12 @@ func (dev *Device) Connect(connectMsg *msg.Connect) {
 	//connectMsg.DeviceInfo.IfTable
 	//connectMsg.DeviceInfo.PortsInfo
 
+	// use initial constant for auth
+	userName := des3Encrypt("ezconfiguser")
+	dev.data.fsm.SetLogin(userName)
+	dev.data.fsm.SetPassword(userName)
+	msg.DumpJson(connectMsg)
+
 }
 
 //The state machine executes this function during the CONNECT
@@ -52,7 +60,46 @@ func (dev *Device) Connect(connectMsg *msg.Connect) {
 //successful in connecting to the controller.
 
 //The state machine transitions to UPGRADE.
-func (dev *Device) ConnectOK(resp *http.Response, connectResponse *msg.ConnectResponse) {
+func (dev Device) ConnectResponse(err error, resp *http.Response, connectResponse *msg.ConnectResponse) (ret ztp.DeviceReturnCode) {
+	if err != nil {
+		log.Println(err)
+		return ztp.DeviceReturnRestart
+	}
+	switch resp.StatusCode {
+	case http.StatusOK:
+	default:
+		log.Println("response code", resp.StatusCode)
+		return ztp.DeviceReturnRestart
+	}
+	log.Println("DECODE AUTH")
+	msg.DumpJson(connectResponse)
+	// if new auth is provided, decode the login/password provided
+	if connectResponse.Credentials.Login != "" && connectResponse.Credentials.Password != "" {
+		login := des3Decrypt(connectResponse.Credentials.Login)
+		password := des3Decrypt(connectResponse.Credentials.Password)
+		// trim 3 characters from either side of the password
+		login = des3Encrypt(login[3 : len(login)-3])
+		password = des3Encrypt(password[3 : len(password)-3])
+		// update the FSM with the new credentials
+		dev.data.fsm.SetLogin(login)
+		dev.data.fsm.SetPassword(password)
+	}
+
+	connectResponse.Credentials.Login = "hidden"
+	connectResponse.Credentials.Password = "hidden"
+	msg.DumpJson(connectResponse)
+
+	// is there a redirected to a different controller
+	// ignore case when comparing strings
+	if strings.EqualFold(connectResponse.Action, "redirect") {
+		if strings.EqualFold(connectResponse.Redirect.Type, "https") {
+			if connectResponse.Redirect.URI != "" {
+				dev.data.fsm.SetRedirect(connectResponse.Redirect.URI)
+				return ztp.DeviceReturnRetry
+			}
+		}
+	}
+	return ztp.DeviceReturnOK
 }
 
 //The state machine executes this function during the CONNECT
@@ -82,7 +129,7 @@ func (dev *Device) ConnectOK(resp *http.Response, connectResponse *msg.ConnectRe
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to
 //DONE.
-func (dev *Device) ConnectFail(resp *http.Response) (ret ztp.DeviceReturnCode) {
+func (dev Device) ConnectFail(resp *http.Response) (ret ztp.DeviceReturnCode) {
 	return ztp.DeviceReturnOK
 }
 
@@ -109,6 +156,7 @@ func (dev *Device) ConnectFail(resp *http.Response) (ret ztp.DeviceReturnCode) {
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to
 //DONE.
-func (dev *Device) ConnectRedirect(resp *http.Response, connectResponse *msg.ConnectResponse) (ret ztp.DeviceReturnCode) {
+func (dev Device) ConnectRedirect(resp *http.Response, connectResponse *msg.ConnectResponse) (ret ztp.DeviceReturnCode) {
+	msg.DumpJson(connectResponse)
 	return ztp.DeviceReturnOK
 }

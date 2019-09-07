@@ -1,7 +1,7 @@
 package main
 
 import (
-	ztp "ztp/client"
+//ztp "ztp/client"
 )
 
 //The state machine executes this function prior to completion.
@@ -13,6 +13,5 @@ import (
 //
 //A return code is not expected, and the execution of the state
 //machine completes after the application returns from the function.
-func (dev *Device) Done(in interface{}) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOK
+func (dev Device) Done() {
 }

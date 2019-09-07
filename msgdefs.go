@@ -415,30 +415,6 @@ type ExtremeFabric struct {
 	DhcpRelayAgents []DhcpRelayAgents `json:"dhcpRelayAgents,omitempty"`
 	Hosts           []Hosts           `json:"hosts,omitempty"`
 }
-type ConfigACK struct {
-	License       License         `json:"license,omitempty"`
-	Poe           Poe             `json:"poe,omitempty"`
-	Dot1X         Dot1X           `json:"dot1X,omitempty"`
-	Lacp          Lacp            `json:"lacp,omitempty"`
-	Lldp          Lldp            `json:"lldp,omitempty"`
-	Logins        Logins          `json:"logins,omitempty"`
-	MacAuth       MacAuth         `json:"macAuth,omitempty"`
-	Ports         []Ports         `json:"ports,omitempty"`
-	Snmp          Snmp            `json:"snmp,omitempty"`
-	SpanningTree  SpanningTree    `json:"spanningTree,omitempty"`
-	Syslog        Syslog          `json:"syslog,omitempty"`
-	Vlans         Vlans           `json:"vlans,omitempty"`
-	MgmtAccess    MgmtAccess      `json:"mgmtAccess,omitempty"`
-	Mlag          Mlag            `json:"mlag,omitempty"`
-	Stacking      StackingPeer    `json:"stacking,omitempty"`
-	Mvrp          Mvrp            `json:"mvrp,omitempty"`
-	ExtremeFabric ExtremeFabric   `json:"extremeFabric,omitempty"`
-	Vxlan         Vxlan           `json:"vxlan,omitempty"`
-	RadiusServers []RadiusServers `json:"radiusServers,omitempty"`
-	Timestamp     string          `json:"timestamp,omitempty"`
-	BpRequestID   int             `json:"bpRequestId,omitempty"`
-	Status        string          `json:"status,omitempty"`
-}
 
 type UpgradeAssets struct {
 	AssetName    string `json:"assetName,omitempty"`
@@ -675,11 +651,17 @@ type Configuration struct {
 	ConfigBlock     ConfigBlock     `json:"configBlock,omitempty"`
 }
 
+// C O N F I G U R A T I O N   R E S P O N S E
+type ConfigurationResponse struct {
+	CliBlock    string      `json:"cliBlock"`
+	ConfigBlock ConfigBlock `json:"configBlock"`
+}
+
 // E V E N T
 type EventMsg struct {
 	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
 	Event           []Event         `json:"event,omitempty"`
-	ConfigACK       ConfigACK       `json:"ConfigACK,omitempty"`
+	ConfigACK       ConfigBlock     `json:"ConfigACK,omitempty"`
 }
 
 // S T A T S
@@ -704,4 +686,69 @@ type Stats struct {
 	SysUpTime           int                 `json:"sysUpTime,omitempty"`
 	CheckInTime         string              `json:"checkInTime,omitempty"`
 	UpgradeTime         string              `json:"upgradeTime,omitempty"`
+}
+
+type StatsResponse struct {
+	StatsTimer            int                   `json:"statsTimer,omitempty"`
+	StatsInterval         int                   `json:"statsInterval,omitempty"`
+	//Action                Action                `json:"action,omitempty"`
+	//Actions               []Actions             `json:"actions,omitempty"`
+	Action                string                `json:"action,omitempty"`
+	Actions               []string             `json:"actions,omitempty"`
+	//ImageUpgradeBlock     ImageUpgradeBlock     `json:"imageUpgradeBlock,omitempty"`
+	ImageUpgradeBlock     []ImageUpgradeBlock     `json:"imageUpgradeBlock,omitempty"`
+	CliBlock              string                `json:"cliBlock,omitempty"`
+	ConfigBlock           ConfigBlock           `json:"configBlock,omitempty"`
+	TracesBlock           TracesBlock           `json:"tracesBlock,omitempty"`
+	ConfigUpload          ConfigUpload          `json:"configUpload,omitempty"`
+	ConfigReporting       ConfigReporting       `json:"configReporting,omitempty"`
+	RebootDevices         RebootDevices         `json:"rebootDevices,omitempty"`
+	ExosBpeReconciliation ExosBpeReconciliation `json:"exosBpeReconciliation,omitempty"`
+}
+type Action struct {
+	Action     string `json:"action,omitempty"`
+	ActionTime string `json:"actionTime,omitempty"`
+}
+type Actions struct {
+	Action     string `json:"action,omitempty"`
+	ActionTime string `json:"actionTime,omitempty"`
+}
+type ImageUpgradeBlock struct {
+	Upgrade      bool   `json:"upgrade,omitempty"`
+	URI          string `json:"uri,omitempty"`
+	Timeout      int    `json:"timeout,omitempty"`
+	AssetName    string `json:"assetName,omitempty"`
+	AssetVersion string `json:"assetVersion,omitempty"`
+	AssetType    string `json:"assetType,omitempty"`
+}
+type TracesBlock struct {
+	URI    string `json:"uri,omitempty"`
+	Delete bool   `json:"delete,omitempty"`
+}
+type ConfigUpload struct {
+	URI string `json:"uri,omitempty"`
+}
+type ConfigReporting struct {
+	Enabled       bool     `json:"enabled,omitempty"`
+	Monitorchange bool     `json:"monitorchange,omitempty"`
+	Include       []string `json:"include,omitempty"`
+	Exclude       []string `json:"exclude,omitempty"`
+	Persistent    bool     `json:"persistent,omitempty"`
+}
+type RebootDevices struct {
+	DeviceList []string `json:"deviceList,omitempty"`
+}
+type ReconfigureBpe struct {
+	SerialNum  string `json:"serialNum,omitempty"`
+	Slot       string `json:"slot,omitempty"`
+	Port       string `json:"port,omitempty"`
+	ModuleName string `json:"moduleName,omitempty"`
+}
+type RemoveLagPort struct {
+	Port string `json:"port,omitempty"`
+}
+type ExosBpeReconciliation struct {
+	Macro          string           `json:"macro,omitempty"`
+	ReconfigureBpe []ReconfigureBpe `json:"reconfigureBpe,omitempty"`
+	RemoveLagPort  []RemoveLagPort  `json:"removeLagPort,omitempty"`
 }

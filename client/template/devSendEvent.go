@@ -12,9 +12,15 @@ import (
 //OK
 //Informs the state machine to send the event message
 //
-func (dev *Device) SendEvents(eventMsg *msg.EventMsg) (ret ztp.DeviceReturnCode) {
-	eventMsg.ApPropertyBlock = *dev.property
-	eventMsg.Event = dev.events
+func (dev Device) SendEvents(eventMsg *msg.EventMsg) (ret ztp.DeviceReturnCode) {
+	eventMsg.ApPropertyBlock = *dev.data.property
+	eventMsg.Event = dev.data.events
 	//eventMsg.ConfigACK
 	return ztp.DeviceReturnOK
+}
+
+//The state machine issues this function when events have been sent to the controller
+//The device resets the event list to an empty list
+func (dev Device) SendEventsComplete() {
+	dev.data.events = make([]msg.Event, 0)
 }

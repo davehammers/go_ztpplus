@@ -12,28 +12,26 @@ const (
 	DeviceReturnRestart
 	DeviceReturnRetry
 	DeviceReturnFinish
-	DeviceReturnDone
+	DeviceReturnAbort
 )
 
 type Device interface {
 	Init()
-	Discover(interface{})
-	DiscoverOK(*ZtpLookupEntry)
-	DiscoverFail() DeviceReturnCode
+	Discover() *[]ZtpLookupEntry
+	DiscoverResponse(*http.Response, *ZtpLookupEntry) DeviceReturnCode
 	Connect(*msg.Connect)
-	ConnectOK(*http.Response, *msg.ConnectResponse)
-	ConnectFail(*http.Response) DeviceReturnCode
-	ConnectRedirect(*http.Response, *msg.ConnectResponse) DeviceReturnCode
-	UpgradeCheck(*msg.ImageUpgrade) DeviceReturnCode
-	Upgrade(interface{}) (DeviceReturnCode, *[]msg.Event)
-	ConfigUpdate(interface{})
-	Config(interface{}) (events *[]msg.Event)
-	PostConfig(interface{}) DeviceReturnCode
-	ConfigOK(interface{}) DeviceReturnCode
-	ConfigFail(interface{}) DeviceReturnCode
-	Running(interface{}) DeviceReturnCode
-	Done(interface{}) DeviceReturnCode
-	ConnectionExpired(interface{}) DeviceReturnCode
-	GetSourceIP(interface{}) DeviceReturnCode
+	ConnectResponse(error, *http.Response, *msg.ConnectResponse) DeviceReturnCode
+	Upgrade(*msg.ImageUpgrade)
+	UpgradeResponse(error, *http.Response, *msg.ImageUpgradeResponse) DeviceReturnCode
+	Config(*msg.Configuration)
+	ConfigResponse(error, *http.Response, *msg.ConfigurationResponse) DeviceReturnCode
+	ConfigAck() DeviceReturnCode
+	PostConfig() DeviceReturnCode
+	Running(*msg.Stats)
+	RunningResponse(error, *http.Response, *msg.StatsResponse) DeviceReturnCode
+	Done()
+	ConnectionExpired()
+	GetSourceIP()
 	SendEvents(*msg.EventMsg) DeviceReturnCode
+	SendEventsComplete()
 }
