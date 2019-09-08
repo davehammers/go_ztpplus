@@ -7,22 +7,26 @@ import (
 	"encoding/base64"
 	"log"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
-var (
-	des3Key []byte = []byte("99a3d014b62293332b85c3ab")
-)
+//This interface defines the functions that every feature must implement
+type Feature interface {
+	getCapability(*msg.Capabilities) error
+	getConnect(*msg.Connect) error
+	getConfig(*msg.ConfigBlock) error
+	setConfig(*msg.ConfigBlock) error
+}
 
 // The Device defines the information required by the FSM to manage a ZTP device instance
 // Additional information may be added below the comment for a device specific implementtion.
 type DeviceData struct {
 	devID         string
-	fsm           *ztp.ZtpClient
-	controller    *ztp.ZtpLookupEntry
+	fsm           *fsm.ZtpClient
+	controller    *fsm.ZtpLookupEntry
 	property      *msg.ApPropertyBlock // this block gets used in every message
 	capabilities  *msg.Capabilities
-	upgradeAssets []msg.Assets
+	upgradeAssets []msg.Asset
 	events        []msg.Event
 
 	// add device specific data elements here
@@ -30,6 +34,10 @@ type DeviceData struct {
 type Device struct {
 	data *DeviceData
 }
+
+var (
+	des3Key []byte = []byte("99a3d014b62293332b85c3ab")
+)
 
 //Create a new device instance that implements the FSM Device interface.
 //
@@ -41,10 +49,10 @@ func NewDevice(devID string) Device {
 			devID:         devID,
 			property:      &msg.ApPropertyBlock{},
 			capabilities:  &msg.Capabilities{},
-			upgradeAssets: make([]msg.Assets, 0),
+			upgradeAssets: make([]msg.Asset, 0),
 			events:        make([]msg.Event, 0),
 			// new FSM for our device instance
-			fsm: ztp.NewZtpClient(),
+			fsm: fsm.NewZtpClient(),
 		},
 	}
 	dev.data.fsm.SetDeviceID(dev.data.devID)
@@ -67,7 +75,7 @@ func (dev Device) StartFSM() {
 	dev.data.fsm.StateMachine()
 }
 
-func (dev Device) AddAsset(asset *msg.Assets) {
+func (dev Device) AddAsset(asset *msg.Asset) {
 	msg.DumpJson(asset)
 	dev.data.upgradeAssets = append(dev.data.upgradeAssets, *asset)
 }

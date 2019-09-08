@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine executes this function before sending a request
@@ -39,10 +39,10 @@ func (dev Device) Config(config *msg.Configuration) {
 //If there are no errors, the state machine transitions to
 //POST_CONFIG.  The state machine postpones the ConfigAck until
 //the application POST_CONFIG functions have been processed.
-func (dev Device) ConfigResponse(err error, resp *http.Response, configResponse *msg.ConfigurationResponse) (ret ztp.DeviceReturnCode) {
+func (dev Device) ConfigResponse(err error, resp *http.Response, configResponse *msg.ConfigurationResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
 		log.Println(err)
-		return ztp.DeviceReturnRestart
+		return fsm.DeviceReturnRestart
 	}
 	switch resp.StatusCode {
 	case http.StatusOK:
@@ -50,18 +50,18 @@ func (dev Device) ConfigResponse(err error, resp *http.Response, configResponse 
 	case http.StatusPreconditionFailed:
 		/*
 			if DEBUG {
-				return ztp.DeviceReturnOK
+				return fsm.DeviceReturnOK
 			}
 		*/
-		return ztp.DeviceReturnRetry
+		return fsm.DeviceReturnRetry
 	case http.StatusNotAcceptable:
 		if DEBUG {
-			return ztp.DeviceReturnRestart
+			return fsm.DeviceReturnRestart
 		}
-		return ztp.DeviceReturnRetry
+		return fsm.DeviceReturnRetry
 	default:
 		// got an unexpected HTTP code
-		return ztp.DeviceReturnAbort
+		return fsm.DeviceReturnAbort
 	}
 	msg.DumpJson(configResponse)
 
@@ -87,5 +87,5 @@ func (dev Device) ConfigResponse(err error, resp *http.Response, configResponse 
 	//configResponse.Timestamp
 	//configResponse.BpRequestID
 	//configResponse.Status
-	return ztp.DeviceReturnOK
+	return fsm.DeviceReturnOK
 }

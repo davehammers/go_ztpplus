@@ -2,7 +2,7 @@ package main
 
 import (
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine issues this function while in SendingEvents.
@@ -12,11 +12,11 @@ import (
 //OK
 //Informs the state machine to send the event message
 //
-func (dev Device) SendEvents(eventMsg *msg.EventMsg) (ret ztp.DeviceReturnCode) {
+func (dev Device) SendEvents(eventMsg *msg.EventMsg) (ret fsm.DeviceReturnCode) {
 	eventMsg.ApPropertyBlock = *dev.data.property
 	eventMsg.Event = dev.data.events
 	//eventMsg.ConfigACK
-	return ztp.DeviceReturnOK
+	return fsm.DeviceReturnOK
 }
 
 //The state machine issues this function when events have been sent to the controller

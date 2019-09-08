@@ -1,616 +1,429 @@
 package ztp
 
 type ApPropertyBlock struct {
-	RuSerialNumber string `json:"ruSerialNumber,omitempty"`
-	BpWiredMacaddr string `json:"bpWiredMacaddr,omitempty"`
-	RuSwVersion    string `json:"ruSwVersion,omitempty"`
-	RuModel        string `json:"ruModel,omitempty"`
-}
-type License struct {
-	FeaturePacks        []string `json:"featurePacks,omitempty"`
-	PortCapacityLicense string   `json:"portCapacityLicense,omitempty"`
-	EffectiveLicense    string   `json:"effectiveLicense,omitempty"`
-	EnabledLicense      string   `json:"enabledLicense,omitempty"`
-	SystemLicense       string   `json:"systemLicense,omitempty"`
-	EffectiveLevel      string   `json:"effectiveLevel,omitempty"`
-}
-type Ports struct {
-	PortType  string   `json:"portType,omitempty"`
-	PortSpeed int      `json:"portSpeed,omitempty"`
-	PortList  []string `json:"portList,omitempty"`
-}
-type IfTable struct {
-	IfIndex           int    `json:"ifIndex,omitempty"`
-	IfName            string `json:"ifName,omitempty"`
-	IfDescr           string `json:"ifDescr,omitempty"`
-	IfType            int    `json:"ifType,omitempty"`
-	IfOutDiscards     int    `json:"ifOutDiscards,omitempty"`
-	IfAdminStatus     int    `json:"ifAdminStatus,omitempty"`
-	IfMtu             int    `json:"ifMtu,omitempty"`
-	IfInDiscards      int    `json:"ifInDiscards,omitempty"`
-	IfInErrors        int    `json:"ifInErrors,omitempty"`
-	IfOperStatus      int    `json:"ifOperStatus,omitempty"`
-	IfOutUcastPkts    int    `json:"ifOutUcastPkts,omitempty"`
-	IfInOctets        int    `json:"ifInOctets,omitempty"`
-	IfLastChange      int    `json:"ifLastChange,omitempty"`
-	IfPhysAddress     string `json:"ifPhysAddress,omitempty"`
-	IfInUcastPkts     int    `json:"ifInUcastPkts,omitempty"`
-	IfSpecific        string `json:"ifSpecific,omitempty"`
-	IfOutNUcastPkts   int    `json:"ifOutNUcastPkts,omitempty"`
-	IfOutQLen         int    `json:"ifOutQLen,omitempty"`
-	IfSpeed           int    `json:"ifSpeed,omitempty"`
-	IfOutOctets       int    `json:"ifOutOctets,omitempty"`
-	IfInUnknownProtos int    `json:"ifInUnknownProtos,omitempty"`
-	IfInNUcastPkts    int    `json:"ifInNUcastPkts,omitempty"`
-	IfOutErrors       int    `json:"ifOutErrors,omitempty"`
-}
-type Lldp struct {
-	PortID             string `json:"portId,omitempty"`
-	SystemName         string `json:"systemName,omitempty"`
-	MgmtAddress        string `json:"mgmtAddress,omitempty"`
-	ChassisID          string `json:"chassisId,omitempty"`
-	SystemCapabilities string `json:"systemCapabilities,omitempty"`
-}
-type PortsInfo struct {
-	PortName string `json:"portName,omitempty"`
-	Lldp     Lldp   `json:"lldp,omitempty"`
-}
-type DeviceInfo struct {
-	SysDescr        string      `json:"sysDescr,omitempty"`
-	SysUpTime       int         `json:"sysUpTime,omitempty"`
-	SysContact      string      `json:"sysContact,omitempty"`
-	SysName         string      `json:"sysName,omitempty"`
-	SysObjectID     string      `json:"sysObjectID,omitempty"`
-	OperatingSystem string      `json:"operatingSystem,omitempty"`
-	SerialNumber    string      `json:"serialNumber,omitempty"`
-	MacAddr         string      `json:"macAddr,omitempty"`
-	MgmtIPAddr      string      `json:"mgmtIpAddr,omitempty"`
-	MgmtPort        string      `json:"mgmtPort,omitempty"`
-	License         License     `json:"license,omitempty"`
-	Ports           []Ports     `json:"ports,omitempty"`
-	IfTable         []IfTable   `json:"ifTable,omitempty"`
-	PortsInfo       []PortsInfo `json:"portsInfo,omitempty"`
+    RuSerialNumber string `json:"ruSerialNumber"`
+    BpWiredMacaddr string `json:"bpWiredMacaddr"`
+    RuSwVersion    string `json:"ruSwVersion"`
+    RuModel        string `json:"ruModel"`
 }
 
-type Assets struct {
-	AssetName    string `json:"assetName,omitempty"`
-	AssetVersion string `json:"assetVersion,omitempty"`
-	AssetType    string `json:"assetType,omitempty"`
-}
-
-type ConfigDownload struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Dot1X struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Lacp struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-	MaxLagCount      int  `json:"maxLagCount,omitempty"`
-}
-type CustomTlvs struct {
-	Oui     string `json:"oui,omitempty"`
-	Subtype int    `json:"subtype,omitempty"`
-}
-type Logins struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type MacAuth struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Mlag struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-	MaxMlagCount     int  `json:"maxMlagCount,omitempty"`
-}
-type Telnet struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type SSH struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type HTTP struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type HTTPS struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type MgmtAccess struct {
-	Telnet Telnet `json:"telnet,omitempty"`
-	SSH    SSH    `json:"ssh,omitempty"`
-	HTTP   HTTP   `json:"http,omitempty"`
-	HTTPS  HTTPS  `json:"https,omitempty"`
-}
-type Mvrp struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Poe struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-	PowerBudget      int  `json:"powerBudget,omitempty"`
-}
-type PortCapabilities struct {
-	Ports           []string `json:"ports,omitempty"`
-	PortSpeed       string   `json:"portSpeed,omitempty"`
-	PortDuplex      string   `json:"portDuplex,omitempty"`
-	AutoNegotiation bool     `json:"autoNegotiation,omitempty"`
-}
-type DesiredPortSettings struct {
-	Ports           []string `json:"ports,omitempty"`
-	PortSpeed       string   `json:"portSpeed,omitempty"`
-	PortDuplex      string   `json:"portDuplex,omitempty"`
-	AutoNegotiation bool     `json:"autoNegotiation,omitempty"`
-}
-type RadiusServers struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type SnmpV1 struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type SnmpV2C struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type SnmpV3 struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Snmp struct {
-	SnmpV1  SnmpV1  `json:"snmpV1,omitempty"`
-	SnmpV2C SnmpV2C `json:"snmpV2c,omitempty"`
-	SnmpV3  SnmpV3  `json:"snmpV3,omitempty"`
-}
-type SpanningTree struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-	SpanGuard        bool `json:"spanGuard,omitempty"`
-	LoopProtect      bool `json:"loopProtect,omitempty"`
-}
-type Syslog struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Stacking struct {
-	FeatureAvailable bool     `json:"featureAvailable,omitempty"`
-	Ports            []string `json:"ports,omitempty"`
-}
-type Telemetry struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Vlans struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-	MaxNtpServers    int  `json:"maxNtpServers,omitempty"`
-	MaxDNSServers    int  `json:"maxDnsServers,omitempty"`
-}
-type Vxlan struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Vpex struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Eee struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type LocatorLed struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
-type Mlagv2 struct {
-	FeatureAvailable bool `json:"featureAvailable,omitempty"`
-}
 type Capabilities struct {
-	ConfigDownload ConfigDownload `json:"configDownload,omitempty"`
-	Dot1X          Dot1X          `json:"dot1x,omitempty"`
-	Lacp           Lacp           `json:"lacp,omitempty"`
-	License        License        `json:"license,omitempty"`
-	Lldp           Lldp           `json:"lldp,omitempty"`
-	Logins         Logins         `json:"logins,omitempty"`
-	MacAuth        MacAuth        `json:"macAuth,omitempty"`
-	Mlag           Mlag           `json:"mlag,omitempty"`
-	MgmtAccess     MgmtAccess     `json:"mgmtAccess,omitempty"`
-	Mvrp           Mvrp           `json:"mvrp,omitempty"`
-	Poe            Poe            `json:"poe,omitempty"`
-	Ports          Ports          `json:"ports,omitempty"`
-	RadiusServers  RadiusServers  `json:"radiusServers,omitempty"`
-	Snmp           Snmp           `json:"snmp,omitempty"`
-	SpanningTree   SpanningTree   `json:"spanningTree,omitempty"`
-	Syslog         Syslog         `json:"syslog,omitempty"`
-	Stacking       Stacking       `json:"stacking,omitempty"`
-	Telemetry      Telemetry      `json:"telemetry,omitempty"`
-	Vlans          Vlans          `json:"vlans,omitempty"`
-	Vxlan          Vxlan          `json:"vxlan,omitempty"`
-	Vpex           Vpex           `json:"vpex,omitempty"`
-	Eee            Eee            `json:"eee,omitempty"`
-	LocatorLed     LocatorLed     `json:"locatorLed,omitempty"`
-	Mlagv2         Mlagv2         `json:"mlagv2,omitempty"`
+    ConfigDownload struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"configDownload"`
+    Dot1X struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"dot1x"`
+    Lacp struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+        MaxLagCount      int  `json:"maxLagCount"`
+    } `json:"lacp"`
+    License struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"license"`
+    Lldp struct {
+        FeatureAvailable bool  `json:"featureAvailable"`
+        StandardTlvs     []int `json:"standardTlvs"`
+        CustomTlvs       []struct {
+            Oui     string `json:"oui"`
+            Subtype int    `json:"subtype"`
+        } `json:"customTlvs"`
+    } `json:"lldp"`
+    Logins struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"logins"`
+    MacAuth struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"macAuth"`
+    Mlag struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+        MaxMlagCount     int  `json:"maxMlagCount"`
+    } `json:"mlag"`
+    MgmtAccess struct {
+        Telnet struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"telnet"`
+        SSH struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"ssh"`
+        HTTP struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"http"`
+        HTTPS struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"https"`
+    } `json:"mgmtAccess"`
+    Mvrp struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"mvrp"`
+    Poe struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+        PowerBudget      int  `json:"powerBudget"`
+    } `json:"poe"`
+    Ports struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+        PortCapabilities []struct {
+            Ports           []string `json:"ports"`
+            PortSpeed       string   `json:"portSpeed"`
+            PortDuplex      string   `json:"portDuplex"`
+            AutoNegotiation bool     `json:"autoNegotiation"`
+        } `json:"portCapabilities"`
+        DesiredPortSettings []struct {
+            Ports           []string `json:"ports"`
+            PortSpeed       string   `json:"portSpeed"`
+            PortDuplex      string   `json:"portDuplex"`
+            AutoNegotiation bool     `json:"autoNegotiation"`
+        } `json:"desiredPortSettings"`
+    } `json:"ports"`
+    RadiusServers struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"radiusServers"`
+    Snmp struct {
+        SnmpV1 struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"snmpV1"`
+        SnmpV2C struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"snmpV2c"`
+        SnmpV3 struct {
+            FeatureAvailable bool `json:"featureAvailable"`
+        } `json:"snmpV3"`
+    } `json:"snmp"`
+    SpanningTree struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+        SpanGuard        bool `json:"spanGuard"`
+        LoopProtect      bool `json:"loopProtect"`
+    } `json:"spanningTree"`
+    Syslog struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"syslog"`
+    Stacking struct {
+        FeatureAvailable bool     `json:"featureAvailable"`
+        Ports            []string `json:"ports"`
+    } `json:"stacking"`
+    Telemetry struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"telemetry"`
+    Vlans struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+        MaxNtpServers    int  `json:"maxNtpServers"`
+        MaxDNSServers    int  `json:"maxDnsServers"`
+    } `json:"vlans"`
+    Vxlan struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"vxlan"`
+    Vpex struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"vpex"`
+    Eee struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"eee"`
+    LocatorLed struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"locatorLed"`
+    Mlagv2 struct {
+        FeatureAvailable bool `json:"featureAvailable"`
+    } `json:"mlagv2"`
 }
-type FeaturePacks struct {
-	FeaturePackName    string `json:"featurePackName,omitempty"`
-	FeaturePackLicense string `json:"featurePackLicense,omitempty"`
-}
-type Dot1XConfig struct {
-	Dot1XEnable bool     `json:"dot1XEnable,omitempty"`
-	Dot1XPorts  []string `json:"dot1XPorts,omitempty"`
-}
-type LldpConfig struct {
-	LldpEnable bool     `json:"lldpEnable,omitempty"`
-	LldpPorts  []string `json:"lldpPorts,omitempty"`
-}
-type LoginConfig struct {
-	AccessLevel string `json:"accessLevel,omitempty"`
-	Password    string `json:"password,omitempty"`
-	Username    string `json:"username,omitempty"`
-}
-type MacAuthConfig struct {
-	MacAuthEnable bool   `json:"macAuthEnable,omitempty"`
-	MacAuthPorts  string `json:"macAuthPorts,omitempty"`
-}
-type PortLinkType struct {
-	LinkType      string   `json:"linkType,omitempty"`
-	LinkTypePorts []string `json:"linkTypePorts,omitempty"`
-}
-type SpanGuard struct {
-	SpanGuardEnabled bool     `json:"spanGuardEnabled,omitempty"`
-	SpanGuardPorts   []string `json:"spanGuardPorts,omitempty"`
-}
-type LoopProtect struct {
-	LoopProtectEnabled bool     `json:"loopProtectEnabled,omitempty"`
-	LoopProtectPorts   []string `json:"loopProtectPorts,omitempty"`
-}
-type SyslogConfig struct {
-	ServerNetworkAddress string `json:"serverNetworkAddress,omitempty"`
-	ServerUDPPort        int    `json:"serverUdpPort,omitempty"`
-}
-type VlanConfig struct {
-	Name                string   `json:"name,omitempty"`
-	NetworkAddress      string   `json:"networkAddress,omitempty"`
-	NetworkPrefixLength int      `json:"networkPrefixLength,omitempty"`
-	TaggedEgressPorts   string   `json:"taggedEgressPorts,omitempty"`
-	UntaggedEgressPorts []string `json:"untaggedEgressPorts,omitempty"`
-	VlanIds             string   `json:"vlanIds,omitempty"`
-}
-type TelnetConfig struct {
-	TelnetEnabled bool `json:"telnetEnabled,omitempty"`
-}
-type SSHConfig struct {
-	SSHEnabled bool `json:"sshEnabled,omitempty"`
-}
-type HTTPConfig struct {
-	HTTPEnabled bool `json:"httpEnabled,omitempty"`
-}
-type HTTPSConfig struct {
-	HTTPSEnabled bool `json:"httpsEnabled,omitempty"`
-}
-type GreConfig struct {
-	ApplianceNetworkAddress string `json:"applianceNetworkAddress,omitempty"`
-	CoreFlow2NetworkAddress string `json:"coreFlow2NetworkAddress,omitempty"`
-}
-type TapModeConfig struct {
-	TapInterface string `json:"tapInterface,omitempty"`
-}
-type TunnelModeConfig struct {
-	TunnelInterface           string `json:"tunnelInterface,omitempty"`
-	TunnelNetworkAddress      string `json:"tunnelNetworkAddress,omitempty"`
-	TunnelNetworkGateway      string `json:"tunnelNetworkGateway,omitempty"`
-	TunnelNetworkPrefixLength int    `json:"tunnelNetworkPrefixLength,omitempty"`
-}
-type PurviewConfig struct {
-	NisEnabled        bool               `json:"nisEnabled,omitempty"`
-	NisServerAddress  string             `json:"nisServerAddress,omitempty"`
-	NisDomainName     string             `json:"nisDomainName,omitempty"`
-	GreEnabled        bool               `json:"greEnabled,omitempty"`
-	TapModeEnabled    bool               `json:"tapModeEnabled,omitempty"`
-	TunnelModeEnabled bool               `json:"tunnelModeEnabled,omitempty"`
-	GreConfig         []GreConfig        `json:"greConfig,omitempty"`
-	TapModeConfig     []TapModeConfig    `json:"tapModeConfig,omitempty"`
-	TunnelModeConfig  []TunnelModeConfig `json:"tunnelModeConfig,omitempty"`
-}
-type NacConfig struct {
-	ApplianceGroup string `json:"applianceGroup,omitempty"`
-}
-type Appliance struct {
-	PurviewConfig PurviewConfig `json:"purviewConfig,omitempty"`
-	NacConfig     NacConfig     `json:"nacConfig,omitempty"`
-}
-type MlagGroups struct {
-	MlagDetect bool     `json:"mlagDetect,omitempty"`
-	MlagPeer   string   `json:"mlagPeer,omitempty"`
-	MlagPorts  []string `json:"mlagPorts,omitempty"`
-}
-type MLag struct {
-	Enabled    bool         `json:"enabled,omitempty"`
-	MlagGroups []MlagGroups `json:"mlagGroups,omitempty"`
-}
-type MlagPeers struct {
-	MlagPeerID     string `json:"mlagPeerId,omitempty"`
-	MlagPeerIPAddr string `json:"mlagPeerIpAddr,omitempty"`
-	MlagpeerVr     string `json:"mlagpeerVr,omitempty"`
-	MlagPeerVlanID int    `json:"mlagPeerVlanId,omitempty"`
-}
-type MlagMembers struct {
-	MlagPort       string `json:"mlagPort,omitempty"`
-	MlagPortMlagID int    `json:"mlagPortMlagId,omitempty"`
-	MlagPortPeerID string `json:"mlagPortPeerId,omitempty"`
-}
-type MLagv2 struct {
-	Logging     string        `json:"logging,omitempty"`
-	MlagPeers   []MlagPeers   `json:"mlagPeers,omitempty"`
-	MlagMembers []MlagMembers `json:"mlagMembers,omitempty"`
-}
-type Peers struct {
-	StackPeer string `json:"stackPeer,omitempty"`
-}
-type Stack struct {
-	Enabled  bool     `json:"enabled,omitempty"`
-	Logging  string   `json:"logging,omitempty"`
-	Topology string   `json:"topology,omitempty"`
-	Ports    []string `json:"ports,omitempty"`
-	Peers    Peers    `json:"peers,omitempty"`
-}
-type MvrpConfig struct {
-	MvrpEnable bool     `json:"mvrpEnable,omitempty"`
-	MvrpPorts  []string `json:"mvrpPorts,omitempty"`
-}
-type Ospf struct {
-	Enabled bool   `json:"enabled,omitempty"`
-	Logging string `json:"logging,omitempty"`
+type FeaturePack   struct {
+    FeaturePackName    string `json:"featurePackName"`
+    FeaturePackLicense string `json:"featurePackLicense"`
 }
 type ConfigBlock struct {
-	License      License      `json:"license,omitempty"`
-	Poe          Poe          `json:"poe,omitempty"`
-	Dot1X        Dot1X        `json:"dot1X,omitempty"`
-	Lacp         Lacp         `json:"lacp,omitempty"`
-	Lldp         Lldp         `json:"lldp,omitempty"`
-	Logins       Logins       `json:"logins,omitempty"`
-	MacAuth      MacAuth      `json:"macAuth,omitempty"`
-	Ports        []Ports      `json:"ports,omitempty"`
-	Snmp         Snmp         `json:"snmp,omitempty"`
-	SpanningTree SpanningTree `json:"spanningTree,omitempty"`
-	Syslog       Syslog       `json:"syslog,omitempty"`
-	Vlans        Vlans        `json:"vlans,omitempty"`
-	MgmtAccess   MgmtAccess   `json:"mgmtAccess,omitempty"`
-	Appliance    Appliance    `json:"appliance,omitempty"`
-	MLag         MLag         `json:"mLag,omitempty"`
-	MLagv2       MLagv2       `json:"mLagv2,omitempty"`
-	Stack        Stack        `json:"stack,omitempty"`
-	Mvrp         Mvrp         `json:"mvrp,omitempty"`
-	Ospf         Ospf         `json:"ospf,omitempty"`
-	Timestamp    string       `json:"timestamp,omitempty"`
-	BpRequestID  int          `json:"bpRequestId,omitempty"`
-	Status       string       `json:"status,omitempty"`
+    License struct {
+        SystemLicense  string `json:"systemLicense"`
+        EffectiveLevel string `json:"effectiveLevel"`
+        FeaturePacks   []FeaturePack `json:"featurePacks"`
+    } `json:"license"`
+    Poe struct {
+        Enabled              bool   `json:"enabled"`
+        Logging              string `json:"logging"`
+        DisconnectPrecedence string `json:"disconnectPrecedence"`
+        Ports                []struct {
+            Enabled       bool   `json:"enabled"`
+            PortName      string `json:"portName"`
+            PoePortAlias  string `json:"poePortAlias"`
+            Detection     string `json:"detection"`
+            Priority      string `json:"priority"`
+            OperatorLimit string `json:"operatorLimit"`
+        } `json:"ports"`
+    } `json:"poe"`
+    Dot1X struct {
+        Enabled      bool   `json:"enabled"`
+        Logging      string `json:"logging"`
+        SharedSecret string `json:"sharedSecret"`
+        RadiusServer string `json:"radiusServer"`
+        Dot1XConfig  []struct {
+            Dot1XEnable bool     `json:"dot1XEnable"`
+            Dot1XPorts  []string `json:"dot1XPorts"`
+        } `json:"dot1XConfig"`
+    } `json:"dot1X"`
+    Lacp struct {
+        Enabled bool     `json:"enabled"`
+        Logging string   `json:"logging"`
+        Lags    []string `json:"lags"`
+    } `json:"lacp"`
+    Lldp struct {
+        Enabled        bool   `json:"enabled"`
+        Logging        string `json:"logging"`
+        MgmtAddress    string `json:"mgmtAddress"`
+        Location       string `json:"location"`
+        SystemName     string `json:"systemName"`
+        TlvMgmtAddress bool   `json:"tlvMgmtAddress"`
+        TlvSystemName  bool   `json:"tlvSystemName"`
+        TlvLocation    bool   `json:"tlvLocation"`
+        LldpConfig     []struct {
+            LldpEnable bool     `json:"lldpEnable"`
+            LldpPorts  []string `json:"lldpPorts"`
+        } `json:"lldpConfig"`
+    } `json:"lldp"`
+    Logins struct {
+        LoginConfig []struct {
+            AccessLevel string `json:"accessLevel"`
+            Password    string `json:"password"`
+            Username    string `json:"username"`
+        } `json:"loginConfig"`
+    } `json:"logins"`
+    MacAuth struct {
+        Enabled       string `json:"enabled"`
+        MacAuthConfig []struct {
+            MacAuthEnable bool   `json:"macAuthEnable"`
+            MacAuthPorts  string `json:"macAuthPorts"`
+        } `json:"macAuthConfig"`
+    } `json:"macAuth"`
+    Ports []struct {
+        PortName         string   `json:"portName"`
+        PortAlias        string   `json:"portAlias"`
+        AdminStatus      string   `json:"adminStatus"`
+        Pvid             int      `json:"pvid"`
+        NodeAlias        bool     `json:"nodeAlias"`
+        Mvrp             bool     `json:"mvrp"`
+        AdminRules       string   `json:"adminRules"`
+        IngressFiltering string   `json:"ingressFiltering"`
+        LinkDuplex       string   `json:"linkDuplex"`
+        LinkSpeed        string   `json:"linkSpeed"`
+        LinkDuplexList   []string `json:"linkDuplexList"`
+        LinkSpeedList    []string `json:"linkSpeedList"`
+    } `json:"ports"`
+    Snmp struct {
+        SysName       string   `json:"sysName"`
+        SysLocation   string   `json:"sysLocation"`
+        SysContact    string   `json:"sysContact"`
+        Notifications []string `json:"notifications"`
+        SnmpV1        struct {
+            Enabled     bool     `json:"enabled"`
+            Logging     string   `json:"logging"`
+            Communities []string `json:"communities"`
+        } `json:"snmpV1"`
+        SnmpV3 struct {
+            Enabled bool     `json:"enabled"`
+            Logging string   `json:"logging"`
+            Users   []string `json:"users"`
+        } `json:"snmpV3"`
+        SnmpV2C struct {
+            Enabled     bool     `json:"enabled"`
+            Logging     string   `json:"logging"`
+            Communities []string `json:"communities"`
+        } `json:"snmpV2c"`
+    } `json:"snmp"`
+    SpanningTree struct {
+        Enabled        bool   `json:"enabled"`
+        Logging        string `json:"logging"`
+        BridgePriority int    `json:"bridgePriority"`
+        Version        string `json:"version"`
+        MstiRegionName string `json:"mstiRegionName"`
+        PortLinkType   []struct {
+            LinkType      string   `json:"linkType"`
+            LinkTypePorts []string `json:"linkTypePorts"`
+        } `json:"portLinkType"`
+        SpanGuard []struct {
+            SpanGuardEnabled bool     `json:"spanGuardEnabled"`
+            SpanGuardPorts   []string `json:"spanGuardPorts"`
+        } `json:"spanGuard"`
+        LoopProtect []struct {
+            LoopProtectEnabled bool     `json:"loopProtectEnabled"`
+            LoopProtectPorts   []string `json:"loopProtectPorts"`
+        } `json:"loopProtect"`
+    } `json:"spanningTree"`
+    Syslog struct {
+        Enabled      bool `json:"enabled"`
+        SyslogConfig []struct {
+            ServerNetworkAddress string `json:"serverNetworkAddress"`
+            ServerUDPPort        int    `json:"serverUdpPort"`
+        } `json:"syslogConfig"`
+    } `json:"syslog"`
+    Vlans struct {
+        VlanConfig []struct {
+            Name                string   `json:"name"`
+            NetworkAddress      string   `json:"networkAddress"`
+            NetworkPrefixLength int      `json:"networkPrefixLength"`
+            TaggedEgressPorts   string   `json:"taggedEgressPorts"`
+            UntaggedEgressPorts []string `json:"untaggedEgressPorts"`
+            VlanIds             string   `json:"vlanIds"`
+        } `json:"vlanConfig"`
+    } `json:"vlans"`
+    MgmtAccess struct {
+        TelnetConfig struct {
+            TelnetEnabled bool `json:"telnetEnabled"`
+        } `json:"telnetConfig"`
+        SSHConfig struct {
+            SSHEnabled bool `json:"sshEnabled"`
+        } `json:"sshConfig"`
+        HTTPConfig struct {
+            HTTPEnabled bool `json:"httpEnabled"`
+        } `json:"httpConfig"`
+        HTTPSConfig struct {
+            HTTPSEnabled bool `json:"httpsEnabled"`
+        } `json:"httpsConfig"`
+    } `json:"mgmtAccess"`
+    Appliance struct {
+        PurviewConfig struct {
+            NisEnabled        bool   `json:"nisEnabled"`
+            NisServerAddress  string `json:"nisServerAddress"`
+            NisDomainName     string `json:"nisDomainName"`
+            GreEnabled        bool   `json:"greEnabled"`
+            TapModeEnabled    bool   `json:"tapModeEnabled"`
+            TunnelModeEnabled bool   `json:"tunnelModeEnabled"`
+            GreConfig         []struct {
+                ApplianceNetworkAddress string `json:"applianceNetworkAddress"`
+                CoreFlow2NetworkAddress string `json:"coreFlow2NetworkAddress"`
+            } `json:"greConfig"`
+            TapModeConfig []struct {
+                TapInterface string `json:"tapInterface"`
+            } `json:"tapModeConfig"`
+            TunnelModeConfig []struct {
+                TunnelInterface           string `json:"tunnelInterface"`
+                TunnelNetworkAddress      string `json:"tunnelNetworkAddress"`
+                TunnelNetworkGateway      string `json:"tunnelNetworkGateway"`
+                TunnelNetworkPrefixLength int    `json:"tunnelNetworkPrefixLength"`
+            } `json:"tunnelModeConfig"`
+        } `json:"purviewConfig"`
+        NacConfig struct {
+            ApplianceGroup string `json:"applianceGroup"`
+        } `json:"nacConfig"`
+    } `json:"appliance"`
+    MLag struct {
+        Enabled    bool `json:"enabled"`
+        MlagGroups []struct {
+            MlagDetect bool     `json:"mlagDetect"`
+            MlagPeer   string   `json:"mlagPeer"`
+            MlagPorts  []string `json:"mlagPorts"`
+        } `json:"mlagGroups"`
+    } `json:"mLag"`
+    MLagv2 struct {
+        Logging   string `json:"logging"`
+        MlagPeers []struct {
+            MlagPeerID     string `json:"mlagPeerId"`
+            MlagPeerIPAddr string `json:"mlagPeerIpAddr"`
+            MlagpeerVr     string `json:"mlagpeerVr"`
+            MlagPeerVlanID int    `json:"mlagPeerVlanId"`
+        } `json:"mlagPeers"`
+        MlagMembers []struct {
+            MlagPort       string `json:"mlagPort"`
+            MlagPortMlagID int    `json:"mlagPortMlagId"`
+            MlagPortPeerID string `json:"mlagPortPeerId"`
+        } `json:"mlagMembers"`
+    } `json:"mLagv2"`
+    Stack struct {
+        Enabled  bool     `json:"enabled"`
+        Logging  string   `json:"logging"`
+        Topology string   `json:"topology"`
+        Ports    []string `json:"ports"`
+        Peers    struct {
+            StackPeer string `json:"stackPeer"`
+        } `json:"peers"`
+    } `json:"stack"`
+    Mvrp struct {
+        Enabled    string `json:"enabled"`
+        MvrpConfig []struct {
+            MvrpEnable bool     `json:"mvrpEnable"`
+            MvrpPorts  []string `json:"mvrpPorts"`
+        } `json:"mvrpConfig"`
+    } `json:"mvrp"`
+    Ospf struct {
+        Enabled bool   `json:"enabled"`
+        Logging string `json:"logging"`
+    } `json:"ospf"`
+    Timestamp   string `json:"timestamp"`
+    BpRequestID int    `json:"bpRequestId"`
+    Status      string `json:"status"`
 }
-
 type Event struct {
-	Type        int    `json:"type,omitempty"`
-	Severity    string `json:"severity,omitempty"`
-	Timestamp   string `json:"timestamp,omitempty"`
-	Target      string `json:"target,omitempty"`
-	Description string `json:"description,omitempty"`
+    Type        int    `json:"type"`
+    Severity    string `json:"severity"`
+    Timestamp   string `json:"timestamp"`
+    Target      string `json:"target"`
+    Description string `json:"description"`
 }
-
-type StackPeerConfig struct {
-	StackPeer string `json:"stackPeer,omitempty"`
-}
-type StackingPeer struct {
-	Enabled         bool              `json:"enabled,omitempty"`
-	StackPeerConfig []StackPeerConfig `json:"stackPeerConfig,omitempty"`
-	StackPortConfig []string          `json:"stackPortConfig,omitempty"`
-	StackTopology   string            `json:"stackTopology,omitempty"`
-}
-type Authentication struct {
-	Type     string `json:"type,omitempty"`
-	Password string `json:"password,omitempty"`
-}
-type DhcpRelayAgents struct {
-	IPAddress string `json:"ipAddress,omitempty"`
-}
-type StaticRoutes struct {
-	Network   string `json:"network,omitempty"`
-	NextHop   string `json:"nextHop,omitempty"`
-	IPVersion string `json:"ipVersion,omitempty"`
-}
-type Hosts struct {
-	Vrf          string         `json:"vrf,omitempty"`
-	IPAddress    string         `json:"ipAddress,omitempty"`
-	IPVersion    string         `json:"ipVersion,omitempty"`
-	StaticRoutes []StaticRoutes `json:"staticRoutes,omitempty"`
-}
-type ExtremeFabric struct {
-	Enabled         bool              `json:"enabled,omitempty"`
-	FabricDomain    string            `json:"fabricDomain,omitempty"`
-	Authentication  Authentication    `json:"authentication,omitempty"`
-	DhcpRelayAgents []DhcpRelayAgents `json:"dhcpRelayAgents,omitempty"`
-	Hosts           []Hosts           `json:"hosts,omitempty"`
-}
-
-type UpgradeAssets struct {
-	AssetName    string `json:"assetName,omitempty"`
-	AssetVersion string `json:"assetVersion,omitempty"`
-	AssetType    string `json:"assetType,omitempty"`
-}
-type Fans struct {
-	Name  string `json:"name,omitempty"`
-	State string `json:"state,omitempty"`
-	Rpm   int    `json:"rpm,omitempty"`
-}
-type Trays struct {
-	State string `json:"state,omitempty"`
-	Name  string `json:"name,omitempty"`
-	Fans  []Fans `json:"fans,omitempty"`
-}
-type Cooling struct {
-	Trays []Trays `json:"trays,omitempty"`
-}
-type StpStatus struct {
-	StpState string `json:"stpState,omitempty"`
-	StpRole  string `json:"stpRole,omitempty"`
-}
-type Med struct {
-	ModelName    string   `json:"modelName,omitempty"`
-	SwVersion    string   `json:"swVersion,omitempty"`
-	Capabilities []string `json:"capabilities,omitempty"`
-	Serial       string   `json:"serial,omitempty"`
-	HwVersion    string   `json:"hwVersion,omitempty"`
-	MdiPdValue   string   `json:"mdiPdValue,omitempty"`
-}
-type Lag struct {
-	Enabled   bool   `json:"enabled,omitempty"`
-	Lag       string `json:"lag,omitempty"`
-	RxState   string `json:"rxState,omitempty"`
-	SelLogic  string `json:"selLogic,omitempty"`
-	MuxState  string `json:"muxState,omitempty"`
-	RxPackets int    `json:"rxPackets,omitempty"`
-	TxPackets int    `json:"txPackets,omitempty"`
-}
-type Link struct {
-	AdminStatus      string `json:"adminStatus,omitempty"`
-	LinkStatus       string `json:"linkStatus,omitempty"`
-	LinkDuplexConfig string `json:"linkDuplexConfig,omitempty"`
-	LinkDuplexActual string `json:"linkDuplexActual,omitempty"`
-	LinkSpeedActual  string `json:"linkSpeedActual,omitempty"`
-	LinkSpeedConfig  string `json:"linkSpeedConfig,omitempty"`
-	RxBytes          int    `json:"rxBytes,omitempty"`
-	RxPackets        int    `json:"rxPackets,omitempty"`
-	RxErrors         int    `json:"rxErrors,omitempty"`
-	TxBytes          int    `json:"txBytes,omitempty"`
-	TxPackets        int    `json:"txPackets,omitempty"`
-	TxErrors         int    `json:"txErrors,omitempty"`
-}
-type PowerSupply struct {
-	Module   string `json:"module,omitempty"`
-	State    string `json:"state,omitempty"`
-	PartInfo string `json:"partInfo,omitempty"`
-	Input    int    `json:"input,omitempty"`
-}
-type Temperatue struct {
-	Temp   int    `json:"temp,omitempty"`
-	Status string `json:"status,omitempty"`
-	Name   string `json:"name,omitempty"`
-}
-type Repsonse struct {
-}
-type VpnTargets struct {
-	RtValue string `json:"rt-value,omitempty"`
-	RtType  string `json:"rt-type,omitempty"`
-}
-type VxlanEvpn struct {
-	RouteDistinguisher string       `json:"route-distinguisher,omitempty"`
-	VpnTargets         []VpnTargets `json:"vpn-targets,omitempty"`
-}
-type VxlanInstance struct {
-	VxlanID           int       `json:"vxlan-id,omitempty"`
-	Description       string    `json:"description,omitempty"`
-	UnknowUnicastDrop string    `json:"unknow-unicast-drop,omitempty"`
-	FilterVrrp        string    `json:"filter-vrrp,omitempty"`
-	VxlanEvpn         VxlanEvpn `json:"vxlan-evpn,omitempty"`
-}
-type AddressFamily struct {
-	Af                  string `json:"af,omitempty"`
-	TunnelSourceIP      string `json:"tunnel-source-ip,omitempty"`
-	TunnelDestinationIP string `json:"tunnel-destination-ip,omitempty"`
-	BindVxlanID         []int  `json:"bind-vxlan-id,omitempty"`
-}
-type StaticVxlanTunnel struct {
-	VxlanTunnelID   int             `json:"vxlan-tunnel-id,omitempty"`
-	VxlanTunnelName string          `json:"vxlan-tunnel-name,omitempty"`
-	AddressFamily   []AddressFamily `json:"address-family,omitempty"`
-}
-type RedundancyGroupBind struct {
-	VxlanID         int `json:"vxlan-id,omitempty"`
-	RedundancyGroup int `json:"redundancy-group,omitempty"`
-}
-type VtepInstances struct {
-	VtepID                int                   `json:"vtep-id,omitempty"`
-	VtepName              string                `json:"vtep-name,omitempty"`
-	SourceInterface       string                `json:"source-interface,omitempty"`
-	MulticastIP           string                `json:"multicast-ip,omitempty"`
-	InnerVlanHandlingMode int                   `json:"inner-vlan-handling-mode,omitempty"`
-	BindVxlanID           []int                 `json:"bind-vxlan-id,omitempty"`
-	StaticVxlanTunnel     []StaticVxlanTunnel   `json:"static-vxlan-tunnel,omitempty"`
-	RedundancyGroupBind   []RedundancyGroupBind `json:"redundancy-group-bind,omitempty"`
-}
-type IetfVxlanVxlan struct {
-	GlobalEnable  bool            `json:"global-enable,omitempty"`
-	VxlanInstance []VxlanInstance `json:"vxlan-instance,omitempty"`
-	VtepInstances []VtepInstances `json:"vtep-instances,omitempty"`
-}
-type TunnelVniStatistic struct {
-	VxlanID    int `json:"vxlan-id,omitempty"`
-	InBytes    int `json:"in-bytes,omitempty"`
-	OutBytes   int `json:"out-bytes,omitempty"`
-	InPackets  int `json:"in-packets,omitempty"`
-	OutPackets int `json:"out-packets,omitempty"`
-}
-type Statistics struct {
-	InBytes            int                  `json:"in-bytes,omitempty"`
-	OutBytes           int                  `json:"out-bytes,omitempty"`
-	InPackets          int                  `json:"in-packets,omitempty"`
-	OutPackets         int                  `json:"out-packets,omitempty"`
-	TunnelVniStatistic []TunnelVniStatistic `json:"tunnel-vni-statistic,omitempty"`
-}
-type VxlanTunnel struct {
-	LocalIP        string     `json:"local-ip,omitempty"`
-	RemoteIP       string     `json:"remote-ip,omitempty"`
-	StaticTunnelID int        `json:"static-tunnel-id,omitempty"`
-	EvpnTunnelID   int        `json:"evpn-tunnel-id,omitempty"`
-	Statistics     Statistics `json:"statistics,omitempty"`
-}
-type IetfVxlanVxlanState struct {
-	VxlanTunnel []VxlanTunnel `json:"vxlan-tunnel,omitempty"`
-}
-type CPUMonitorTable struct {
-	Module            string `json:"module,omitempty"`
-	ProcessName       string `json:"processName,omitempty"`
-	ProcessID         int    `json:"processId,omitempty"`
-	ProcessState      string `json:"processState,omitempty"`
-	Utilization5Secs  int    `json:"utilization5secs,omitempty"`
-	Utilization10Secs int    `json:"utilization10secs,omitempty"`
-	Utilization30Secs int    `json:"utilization30secs,omitempty"`
-	Utilization1Min   int    `json:"utilization1min,omitempty"`
-	Utilization5Mins  int    `json:"utilization5mins,omitempty"`
-	Utilization30Mins int    `json:"utilization30mins,omitempty"`
-	Utilization1Hour  int    `json:"utilization1hour,omitempty"`
-	MaxUtilization    int    `json:"maxUtilization,omitempty"`
-	UserTime          int    `json:"userTime,omitempty"`
-	SystemTime        int    `json:"systemTime,omitempty"`
-}
-type CPUMonitorSystemTable struct {
-	Module            string `json:"module,omitempty"`
-	Utilization5Secs  int    `json:"utilization5secs,omitempty"`
-	Utilization10Secs int    `json:"utilization10secs,omitempty"`
-	Utilization30Secs int    `json:"utilization30secs,omitempty"`
-	Utilization1Min   int    `json:"utilization1min,omitempty"`
-	Utilization5Mins  int    `json:"utilization5mins,omitempty"`
-	Utilization30Mins int    `json:"utilization30mins,omitempty"`
-	Utilization1Hour  int    `json:"utilization1hour,omitempty"`
-	MaxUtilization    int    `json:"maxUtilization,omitempty"`
-}
-type CPUUtilization struct {
-	CPUMonitorInterval         int                     `json:"cpuMonitorInterval,omitempty"`
-	CPUMonitorTotalUtilization int                     `json:"cpuMonitorTotalUtilization,omitempty"`
-	CPUMonitorTable            []CPUMonitorTable       `json:"cpuMonitorTable,omitempty"`
-	CPUMonitorSystemTable      []CPUMonitorSystemTable `json:"cpuMonitorSystemTable,omitempty"`
-}
-type MemoryMonitorTable struct {
-	Module      string `json:"module,omitempty"`
-	ProcessName string `json:"processName,omitempty"`
-	Usage       int    `json:"usage,omitempty"`
-	Limit       int    `json:"limit,omitempty"`
-}
-type MemoryMonitorSystemTable struct {
-	Module      string `json:"module,omitempty"`
-	SystemTotal int    `json:"systemTotal,omitempty"`
-	SystemFree  int    `json:"systemFree,omitempty"`
-	SystemUsage int    `json:"systemUsage,omitempty"`
-	UserUsage   int    `json:"userUsage,omitempty"`
-}
-type MemoryUtilization struct {
-	MemoryMonitorTable       []MemoryMonitorTable       `json:"memoryMonitorTable,omitempty"`
-	MemoryMonitorSystemTable []MemoryMonitorSystemTable `json:"memoryMonitorSystemTable,omitempty"`
-}
-type MLagPeers struct {
-	MLagPeerID     string `json:"mLagPeerId,omitempty"`
-	MLagPeerStatus string `json:"mLagPeerStatus,omitempty"`
-	MLagPeerUpTime int    `json:"mLagPeerUpTime,omitempty"`
+type Asset struct {
+    AssetName    string `json:"assetName"`
+    AssetVersion string `json:"assetVersion"`
+    AssetType    string `json:"assetType"`
 }
 
 // C O N N E C T
 type Connect struct {
-	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
-	DeviceInfo      DeviceInfo      `json:"deviceInfo,omitempty"`
+	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock"`
+	DeviceInfo struct {
+		SysDescr        string `json:"sysDescr"`
+		SysUpTime       int    `json:"sysUpTime"`
+		SysContact      string `json:"sysContact"`
+		SysName         string `json:"sysName"`
+		SysObjectID     string `json:"sysObjectID"`
+		OperatingSystem string `json:"operatingSystem"`
+		SerialNumber    string `json:"serialNumber"`
+		MacAddr         string `json:"macAddr"`
+		MgmtIPAddr      string `json:"mgmtIpAddr"`
+		MgmtPort        string `json:"mgmtPort"`
+		License         struct {
+			FeaturePacks        []FeaturePack `json:"featurePacks"`
+			PortCapacityLicense string   `json:"portCapacityLicense"`
+			EffectiveLicense    string   `json:"effectiveLicense"`
+			EnabledLicense      string   `json:"enabledLicense"`
+			SystemLicense       string   `json:"systemLicense"`
+			EffectiveLevel      string   `json:"effectiveLevel"`
+		} `json:"license"`
+		Ports []struct {
+			PortType  string   `json:"portType"`
+			PortSpeed int      `json:"portSpeed"`
+			PortList  []string `json:"portList"`
+		} `json:"ports"`
+		IfTable []struct {
+			IfIndex           int    `json:"ifIndex"`
+			IfName            string `json:"ifName"`
+			IfDescr           string `json:"ifDescr"`
+			IfType            int    `json:"ifType"`
+			IfOutDiscards     int    `json:"ifOutDiscards"`
+			IfAdminStatus     int    `json:"ifAdminStatus"`
+			IfMtu             int    `json:"ifMtu"`
+			IfInDiscards      int    `json:"ifInDiscards"`
+			IfInErrors        int    `json:"ifInErrors"`
+			IfOperStatus      int    `json:"ifOperStatus"`
+			IfOutUcastPkts    int    `json:"ifOutUcastPkts"`
+			IfInOctets        int    `json:"ifInOctets"`
+			IfLastChange      int    `json:"ifLastChange"`
+			IfPhysAddress     string `json:"ifPhysAddress"`
+			IfInUcastPkts     int    `json:"ifInUcastPkts"`
+			IfSpecific        string `json:"ifSpecific"`
+			IfOutNUcastPkts   int    `json:"ifOutNUcastPkts"`
+			IfOutQLen         int    `json:"ifOutQLen"`
+			IfSpeed           int    `json:"ifSpeed"`
+			IfOutOctets       int    `json:"ifOutOctets"`
+			IfInUnknownProtos int    `json:"ifInUnknownProtos"`
+			IfInNUcastPkts    int    `json:"ifInNUcastPkts"`
+			IfOutErrors       int    `json:"ifOutErrors"`
+		} `json:"ifTable"`
+		PortsInfo []struct {
+			PortName string `json:"portName"`
+			Lldp     struct {
+				PortID             string `json:"portId"`
+				SystemName         string `json:"systemName"`
+				MgmtAddress        string `json:"mgmtAddress"`
+				ChassisID          string `json:"chassisId"`
+				SystemCapabilities string `json:"systemCapabilities"`
+			} `json:"lldp"`
+		} `json:"portsInfo"`
+	} `json:"deviceInfo"`
 }
 
 type ConnectResponse struct {
@@ -628,8 +441,8 @@ type ConnectResponse struct {
 
 // I M A G E U P G R A D E
 type ImageUpgrade struct {
-	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
-	Assets          []Assets        `json:"assets,omitempty"`
+	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock"`
+	Assets []Asset `json:"assets"`
 }
 
 type ImageUpgradeResponse struct {
@@ -646,46 +459,254 @@ type ImageUpgradeResponse struct {
 
 // C O N F I G U R A T I O N
 type Configuration struct {
-	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
-	Capabilities    Capabilities    `json:"capabilities,omitempty"`
-	ConfigBlock     ConfigBlock     `json:"configBlock,omitempty"`
+	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock"`
+	Capabilities Capabilities `json:"capabilities"`
+	ConfigBlock ConfigBlock `json:"configBlock"`
 }
 
 // C O N F I G U R A T I O N   R E S P O N S E
 type ConfigurationResponse struct {
-	CliBlock    string      `json:"cliBlock"`
+	CliBlock    string `json:"cliBlock"`
 	ConfigBlock ConfigBlock `json:"configBlock"`
 }
 
 // E V E N T
 type EventMsg struct {
-	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
-	Event           []Event         `json:"event,omitempty"`
-	ConfigACK       ConfigBlock     `json:"ConfigACK,omitempty"`
+	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock"`
+	Event []Event `json:"event"`
+	ConfigACK ConfigBlock `json:"ConfigACK"`
 }
 
 // S T A T S
 type Stats struct {
 	ApPropertyBlock     ApPropertyBlock     `json:"apPropertyBlock,omitempty"`
 	Capabilities        Capabilities        `json:"capabilities,omitempty"`
-	Assets              []Assets            `json:"assets,omitempty"`
-	UpgradeAssets       []UpgradeAssets     `json:"upgradeAssets,omitempty"`
+	Assets []Asset `json:"assets"`
+	UpgradeAssets []Asset `json:"upgradeAssets"`
 	ConfigBlock         ConfigBlock         `json:"configBlock,omitempty"`
-	Cooling             Cooling             `json:"cooling,omitempty"`
-	IfTable             []IfTable           `json:"ifTable,omitempty"`
-	PortsInfo           []PortsInfo         `json:"portsInfo,omitempty"`
-	PowerSupply         []PowerSupply       `json:"powerSupply,omitempty"`
-	Temperatue          []Temperatue        `json:"temperatue,omitempty"`
-	Telemetry           []Telemetry         `json:"telemetry,omitempty"`
-	IetfVxlanVxlan      IetfVxlanVxlan      `json:"ietf-vxlan:vxlan,omitempty"`
-	IetfVxlanVxlanState IetfVxlanVxlanState `json:"ietf-vxlan:vxlan-state,omitempty"`
-	CPUUtilization      CPUUtilization      `json:"cpuUtilization,omitempty"`
-	MemoryUtilization   MemoryUtilization   `json:"memoryUtilization,omitempty"`
-	Mlagv2              Mlagv2              `json:"mlagv2,omitempty"`
-	Timestamp           int                 `json:"timestamp,omitempty"`
-	SysUpTime           int                 `json:"sysUpTime,omitempty"`
-	CheckInTime         string              `json:"checkInTime,omitempty"`
-	UpgradeTime         string              `json:"upgradeTime,omitempty"`
+	Cooling struct {
+		Trays []struct {
+			State string `json:"state"`
+			Name  string `json:"name"`
+			Fans  []struct {
+				Name  string `json:"name"`
+				State string `json:"state"`
+				Rpm   int    `json:"rpm"`
+			} `json:"fans"`
+		} `json:"trays"`
+	} `json:"cooling"`
+	IfTable []struct {
+		IfIndex           int    `json:"ifIndex"`
+		IfName            string `json:"ifName"`
+		IfDescr           string `json:"ifDescr"`
+		IfType            int    `json:"ifType"`
+		IfOutDiscards     int    `json:"ifOutDiscards"`
+		IfAdminStatus     int    `json:"ifAdminStatus"`
+		IfMtu             int    `json:"ifMtu"`
+		IfInDiscards      int    `json:"ifInDiscards"`
+		IfInErrors        int    `json:"ifInErrors"`
+		IfOperStatus      int    `json:"ifOperStatus"`
+		IfOutUcastPkts    int    `json:"ifOutUcastPkts"`
+		IfInOctets        int    `json:"ifInOctets"`
+		IfLastChange      int    `json:"ifLastChange"`
+		IfPhysAddress     string `json:"ifPhysAddress"`
+		IfInUcastPkts     int    `json:"ifInUcastPkts"`
+		IfSpecific        string `json:"ifSpecific"`
+		IfOutNUcastPkts   int    `json:"ifOutNUcastPkts"`
+		IfOutQLen         int    `json:"ifOutQLen"`
+		IfSpeed           int    `json:"ifSpeed"`
+		IfOutOctets       int    `json:"ifOutOctets"`
+		IfInUnknownProtos int    `json:"ifInUnknownProtos"`
+		IfInNUcastPkts    int    `json:"ifInNUcastPkts"`
+		IfOutErrors       int    `json:"ifOutErrors"`
+	} `json:"ifTable"`
+	PortsInfo []struct {
+		PortName   string `json:"portName"`
+		StatsCheck int    `json:"statsCheck"`
+		StpStatus  struct {
+			StpState string `json:"stpState"`
+			StpRole  string `json:"stpRole"`
+		} `json:"stpStatus"`
+		Poe struct {
+			Curr    int    `json:"curr"`
+			Power   int    `json:"power"`
+			Volts   int    `json:"volts"`
+			State   string `json:"state"`
+			Fault   string `json:"fault"`
+			PdClass string `json:"pdClass"`
+		} `json:"poe"`
+		Lldp struct {
+			PortID             string   `json:"portId"`
+			SystemName         string   `json:"systemName"`
+			SystemCapabilities []string `json:"systemCapabilities"`
+			MgmtAddress        string   `json:"mgmtAddress"`
+			ChassisID          string   `json:"chassisId"`
+			Med                struct {
+				ModelName    string   `json:"modelName"`
+				SwVersion    string   `json:"swVersion"`
+				Capabilities []string `json:"capabilities"`
+				Serial       string   `json:"serial"`
+				HwVersion    string   `json:"hwVersion"`
+				MdiPdValue   string   `json:"mdiPdValue"`
+			} `json:"med"`
+		} `json:"lldp"`
+		Lag struct {
+			Enabled   bool   `json:"enabled"`
+			Lag       string `json:"lag"`
+			RxState   string `json:"rxState"`
+			SelLogic  string `json:"selLogic"`
+			MuxState  string `json:"muxState"`
+			RxPackets int    `json:"rxPackets"`
+			TxPackets int    `json:"txPackets"`
+		} `json:"lag"`
+		Link struct {
+			AdminStatus      string `json:"adminStatus"`
+			LinkStatus       string `json:"linkStatus"`
+			LinkDuplexConfig string `json:"linkDuplexConfig"`
+			LinkDuplexActual string `json:"linkDuplexActual"`
+			LinkSpeedActual  string `json:"linkSpeedActual"`
+			LinkSpeedConfig  string `json:"linkSpeedConfig"`
+			RxBytes          int    `json:"rxBytes"`
+			RxPackets        int    `json:"rxPackets"`
+			RxErrors         int    `json:"rxErrors"`
+			TxBytes          int    `json:"txBytes"`
+			TxPackets        int    `json:"txPackets"`
+			TxErrors         int    `json:"txErrors"`
+		} `json:"link"`
+	} `json:"portsInfo"`
+	PowerSupply []struct {
+		Module   string `json:"module"`
+		State    string `json:"state"`
+		PartInfo string `json:"partInfo"`
+		Input    int    `json:"input"`
+	} `json:"powerSupply"`
+	Temperatue []struct {
+		Temp   int    `json:"temp"`
+		Status string `json:"status"`
+		Name   string `json:"name"`
+	} `json:"temperatue"`
+	Telemetry []struct {
+		Path           string `json:"path"`
+		HTTPStatusCode int    `json:"httpStatusCode"`
+		Repsonse       struct {
+		} `json:"repsonse"`
+	} `json:"telemetry"`
+	IetfVxlanVxlan struct {
+		GlobalEnable  bool `json:"global-enable"`
+		VxlanInstance []struct {
+			VxlanID           int    `json:"vxlan-id"`
+			Description       string `json:"description"`
+			UnknowUnicastDrop string `json:"unknow-unicast-drop"`
+			FilterVrrp        string `json:"filter-vrrp"`
+			VxlanEvpn         struct {
+				RouteDistinguisher string `json:"route-distinguisher"`
+				VpnTargets         []struct {
+					RtValue string `json:"rt-value"`
+					RtType  string `json:"rt-type"`
+				} `json:"vpn-targets"`
+			} `json:"vxlan-evpn"`
+		} `json:"vxlan-instance"`
+		VtepInstances []struct {
+			VtepID                int    `json:"vtep-id"`
+			VtepName              string `json:"vtep-name"`
+			SourceInterface       string `json:"source-interface"`
+			MulticastIP           string `json:"multicast-ip"`
+			InnerVlanHandlingMode int    `json:"inner-vlan-handling-mode"`
+			BindVxlanID           []int  `json:"bind-vxlan-id"`
+			StaticVxlanTunnel     []struct {
+				VxlanTunnelID   int    `json:"vxlan-tunnel-id"`
+				VxlanTunnelName string `json:"vxlan-tunnel-name"`
+				AddressFamily   []struct {
+					Af                  string `json:"af"`
+					TunnelSourceIP      string `json:"tunnel-source-ip"`
+					TunnelDestinationIP string `json:"tunnel-destination-ip"`
+					BindVxlanID         []int  `json:"bind-vxlan-id"`
+				} `json:"address-family"`
+			} `json:"static-vxlan-tunnel"`
+			RedundancyGroupBind []struct {
+				VxlanID         int `json:"vxlan-id"`
+				RedundancyGroup int `json:"redundancy-group"`
+			} `json:"redundancy-group-bind"`
+		} `json:"vtep-instances"`
+	} `json:"ietf-vxlan:vxlan"`
+	IetfVxlanVxlanState struct {
+		VxlanTunnel []struct {
+			LocalIP        string `json:"local-ip"`
+			RemoteIP       string `json:"remote-ip"`
+			StaticTunnelID int    `json:"static-tunnel-id"`
+			EvpnTunnelID   int    `json:"evpn-tunnel-id"`
+			Statistics     struct {
+				InBytes            int `json:"in-bytes"`
+				OutBytes           int `json:"out-bytes"`
+				InPackets          int `json:"in-packets"`
+				OutPackets         int `json:"out-packets"`
+				TunnelVniStatistic []struct {
+					VxlanID    int `json:"vxlan-id"`
+					InBytes    int `json:"in-bytes"`
+					OutBytes   int `json:"out-bytes"`
+					InPackets  int `json:"in-packets"`
+					OutPackets int `json:"out-packets"`
+				} `json:"tunnel-vni-statistic"`
+			} `json:"statistics"`
+		} `json:"vxlan-tunnel"`
+	} `json:"ietf-vxlan:vxlan-state"`
+	CPUUtilization struct {
+		CPUMonitorInterval         int `json:"cpuMonitorInterval"`
+		CPUMonitorTotalUtilization int `json:"cpuMonitorTotalUtilization"`
+		CPUMonitorTable            []struct {
+			Module            string `json:"module"`
+			ProcessName       string `json:"processName"`
+			ProcessID         int    `json:"processId"`
+			ProcessState      string `json:"processState"`
+			Utilization5Secs  int    `json:"utilization5secs"`
+			Utilization10Secs int    `json:"utilization10secs"`
+			Utilization30Secs int    `json:"utilization30secs"`
+			Utilization1Min   int    `json:"utilization1min"`
+			Utilization5Mins  int    `json:"utilization5mins"`
+			Utilization30Mins int    `json:"utilization30mins"`
+			Utilization1Hour  int    `json:"utilization1hour"`
+			MaxUtilization    int    `json:"maxUtilization"`
+			UserTime          int    `json:"userTime"`
+			SystemTime        int    `json:"systemTime"`
+		} `json:"cpuMonitorTable"`
+		CPUMonitorSystemTable []struct {
+			Module            string `json:"module"`
+			Utilization5Secs  int    `json:"utilization5secs"`
+			Utilization10Secs int    `json:"utilization10secs"`
+			Utilization30Secs int    `json:"utilization30secs"`
+			Utilization1Min   int    `json:"utilization1min"`
+			Utilization5Mins  int    `json:"utilization5mins"`
+			Utilization30Mins int    `json:"utilization30mins"`
+			Utilization1Hour  int    `json:"utilization1hour"`
+			MaxUtilization    int    `json:"maxUtilization"`
+		} `json:"cpuMonitorSystemTable"`
+	} `json:"cpuUtilization"`
+	MemoryUtilization struct {
+		MemoryMonitorTable []struct {
+			Module      string `json:"module"`
+			ProcessName string `json:"processName"`
+			Usage       int    `json:"usage"`
+			Limit       int    `json:"limit"`
+		} `json:"memoryMonitorTable"`
+		MemoryMonitorSystemTable []struct {
+			Module      string `json:"module"`
+			SystemTotal int    `json:"systemTotal"`
+			SystemFree  int    `json:"systemFree"`
+			SystemUsage int    `json:"systemUsage"`
+			UserUsage   int    `json:"userUsage"`
+		} `json:"memoryMonitorSystemTable"`
+	} `json:"memoryUtilization"`
+	Mlagv2 struct {
+		MLagPeers []struct {
+			MLagPeerID     string `json:"mLagPeerId"`
+			MLagPeerStatus string `json:"mLagPeerStatus"`
+			MLagPeerUpTime int    `json:"mLagPeerUpTime"`
+		} `json:"mLagPeers"`
+	} `json:"mlagv2"`
+	Timestamp   int    `json:"timestamp"`
+	SysUpTime   int    `json:"sysUpTime"`
+	CheckInTime string `json:"checkInTime"`
+	UpgradeTime string `json:"upgradeTime"`
 }
 
 type StatsResponse struct {

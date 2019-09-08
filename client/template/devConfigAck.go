@@ -1,10 +1,10 @@
 package main
 
 import (
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 // evalute any events and tell FSM what to do
-func (dev Device) ConfigAck() ztp.DeviceReturnCode {
-	return ztp.DeviceReturnOK
+func (dev Device) ConfigAck() fsm.DeviceReturnCode {
+	return fsm.DeviceReturnOK
 }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine executes this function during the CONNECT
@@ -27,7 +27,7 @@ func (dev Device) Connect(connectMsg *msg.Connect) {
 	// keep a copy for future transactions
 	dev.data.property = &connectMsg.ApPropertyBlock
 
-	connectMsg.DeviceInfo.SysDescr = "template simulation for ztp"
+	connectMsg.DeviceInfo.SysDescr = "template simulation for fsm"
 	connectMsg.DeviceInfo.SysUpTime = 128706300
 	connectMsg.DeviceInfo.SysContact = "https://www.extremenetworks.com/support/"
 	connectMsg.DeviceInfo.SysName = connectMsg.ApPropertyBlock.RuModel
@@ -60,16 +60,16 @@ func (dev Device) Connect(connectMsg *msg.Connect) {
 //successful in connecting to the controller.
 
 //The state machine transitions to UPGRADE.
-func (dev Device) ConnectResponse(err error, resp *http.Response, connectResponse *msg.ConnectResponse) (ret ztp.DeviceReturnCode) {
+func (dev Device) ConnectResponse(err error, resp *http.Response, connectResponse *msg.ConnectResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
 		log.Println(err)
-		return ztp.DeviceReturnRestart
+		return fsm.DeviceReturnRestart
 	}
 	switch resp.StatusCode {
 	case http.StatusOK:
 	default:
 		log.Println("response code", resp.StatusCode)
-		return ztp.DeviceReturnRestart
+		return fsm.DeviceReturnRestart
 	}
 	log.Println("DECODE AUTH")
 	msg.DumpJson(connectResponse)
@@ -95,11 +95,11 @@ func (dev Device) ConnectResponse(err error, resp *http.Response, connectRespons
 		if strings.EqualFold(connectResponse.Redirect.Type, "https") {
 			if connectResponse.Redirect.URI != "" {
 				dev.data.fsm.SetRedirect(connectResponse.Redirect.URI)
-				return ztp.DeviceReturnRetry
+				return fsm.DeviceReturnRetry
 			}
 		}
 	}
-	return ztp.DeviceReturnOK
+	return fsm.DeviceReturnOK
 }
 
 //The state machine executes this function during the CONNECT
@@ -129,8 +129,8 @@ func (dev Device) ConnectResponse(err error, resp *http.Response, connectRespons
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to
 //DONE.
-func (dev Device) ConnectFail(resp *http.Response) (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOK
+func (dev Device) ConnectFail(resp *http.Response) (ret fsm.DeviceReturnCode) {
+	return fsm.DeviceReturnOK
 }
 
 //The state machine executes this function during the CONNECT
@@ -156,7 +156,7 @@ func (dev Device) ConnectFail(resp *http.Response) (ret ztp.DeviceReturnCode) {
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to
 //DONE.
-func (dev Device) ConnectRedirect(resp *http.Response, connectResponse *msg.ConnectResponse) (ret ztp.DeviceReturnCode) {
+func (dev Device) ConnectRedirect(resp *http.Response, connectResponse *msg.ConnectResponse) (ret fsm.DeviceReturnCode) {
 	msg.DumpJson(connectResponse)
-	return ztp.DeviceReturnOK
+	return fsm.DeviceReturnOK
 }

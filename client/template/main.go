@@ -2,14 +2,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"sync"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
-// Environment variable ztpclientDEBUG=1 sets the package DEBUG=true
-const EnvDebug = "ztpDEBUG"
+// Environment variable fsmclientDEBUG=1 sets the package DEBUG=true
+const EnvDebug = "fsmDEBUG"
 
 //DEBUG can be used during development to output log messages
 var (
@@ -40,7 +41,7 @@ func flagSetup() {
 	flag.Parse()
 	DEBUG = *pDebug
 	if DEBUG {
-		ztp.DEBUG = *pDebug
+		fsm.DEBUG = *pDebug
 		msg.DEBUG = *pDebug
 	}
 }
@@ -49,18 +50,21 @@ func main() {
 	var wg sync.WaitGroup
 	// Get device ID from the device.
 	// Here we just code a string for the template
-	devID := "12345-67890-sim1"
 	// override with any command line debug
+	devID := "12345-67890"
 	if *deviceID != "" {
 		devID = *deviceID
 	}
 	// using go routines, any number of device simulations can be created
-	wg.Add(1)
-	go func(devID string) {
-		defer wg.Done()
+	for i := 1; i < 3; i++ {
+		d := fmt.Sprintf("%s-sim%d", devID, i)
+		wg.Add(1)
+		go func(devID string) {
+			defer wg.Done()
 
-		dev := NewDevice(devID)
-		dev.StartFSM()
-	}(devID)
+			dev := NewDevice(devID)
+			dev.StartFSM()
+		}(d)
+	}
 	wg.Wait()
 }

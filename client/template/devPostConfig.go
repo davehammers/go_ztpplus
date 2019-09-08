@@ -1,7 +1,7 @@
 package main
 
 import (
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine executes these functions during the
@@ -36,6 +36,6 @@ import (
 //machine to revert back to CONNECT.  The state machine
 //waits for the self.data.args.error_interval to expire before
 //reconnecting to the Extreme Control service.
-func (dev Device) PostConfig() (ret ztp.DeviceReturnCode) {
-	return ztp.DeviceReturnOK
+func (dev Device) PostConfig() (ret fsm.DeviceReturnCode) {
+	return fsm.DeviceReturnOK
 }

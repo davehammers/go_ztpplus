@@ -5,7 +5,7 @@ import (
 	"net"
 	"net/http"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine executes this function during the DISCOVER
@@ -14,11 +14,11 @@ import (
 //for the state machine to look for.
 //
 //
-func (dev Device) Discover() (controllerList *[]ztp.ZtpLookupEntry) {
+func (dev Device) Discover() (controllerList *[]fsm.ZtpLookupEntry) {
 	//DNS controller names
 	var err error
-	controller := ztp.ZtpLookupEntry{}
-	c := make([]ztp.ZtpLookupEntry, 0)
+	controller := fsm.ZtpLookupEntry{}
+	c := make([]fsm.ZtpLookupEntry, 0)
 	controllerList = &c
 	// if a command line override was provided, look for that entry first
 	if *debugCtrlrIP != "" {
@@ -37,8 +37,8 @@ func (dev Device) Discover() (controllerList *[]ztp.ZtpLookupEntry) {
 			log.Println(err)
 		}
 	}
-	*controllerList = append(*controllerList, ztp.ZtpLookupEntry{"extremecontrol", ":8443", true})
-	*controllerList = append(*controllerList, ztp.ZtpLookupEntry{"extremecontrol.extremenetworks.com", ":8443", true})
+	*controllerList = append(*controllerList, fsm.ZtpLookupEntry{"extremecontrol", ":8443", true})
+	*controllerList = append(*controllerList, fsm.ZtpLookupEntry{"extremecontrol.extremenetworks.com", ":8443", true})
 	msg.DumpJson(controllerList)
 	return
 }
@@ -53,8 +53,8 @@ func (dev Device) Discover() (controllerList *[]ztp.ZtpLookupEntry) {
 //
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to DONE.
-func (dev Device) DiscoverResponse(resp *http.Response, discoverResponseMsg *ztp.ZtpLookupEntry) (ret ztp.DeviceReturnCode) {
+func (dev Device) DiscoverResponse(resp *http.Response, discoverResponseMsg *fsm.ZtpLookupEntry) (ret fsm.DeviceReturnCode) {
 	msg.DumpJson(discoverResponseMsg)
 	dev.data.controller = discoverResponseMsg
-	return ztp.DeviceReturnOK
+	return fsm.DeviceReturnOK
 }

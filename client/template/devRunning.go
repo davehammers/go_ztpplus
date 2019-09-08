@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine calls this function to fill in the stats message
@@ -61,10 +61,10 @@ func (dev Device) Running(statsMsg *msg.Stats) {
 //
 //A failure in the REST API attempt with the Extreme Control
 //service causes the state machine to transition to CONNECT.
-func (dev Device) RunningResponse(err error, resp *http.Response, statsResponseMsg *msg.StatsResponse) (ret ztp.DeviceReturnCode) {
+func (dev Device) RunningResponse(err error, resp *http.Response, statsResponseMsg *msg.StatsResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
 		log.Println(err)
-		return ztp.DeviceReturnRetry
+		return fsm.DeviceReturnRetry
 	}
 	if resp != nil {
 		msg.DumpJson(statsResponseMsg)
@@ -75,13 +75,13 @@ func (dev Device) RunningResponse(err error, resp *http.Response, statsResponseM
 		if int(resp.StatusCode/100) == 4 {
 			log.Println("400 ERRORS")
 			// just keep trying for errors in the 400's
-			return ztp.DeviceReturnOK
+			return fsm.DeviceReturnOK
 		}
 		log.Println("SOME OTHER ERRORS")
-		return ztp.DeviceReturnRestart
+		return fsm.DeviceReturnRestart
 	}
 	if statsResponseMsg.StatsInterval > 0 {
 		dev.data.fsm.SetRunningRetry(statsResponseMsg.StatsInterval)
 	}
-	return ztp.DeviceReturnOK
+	return fsm.DeviceReturnOK
 }

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	msg "ztp"
-	ztp "ztp/client"
+	fsm "ztp/client/fsm"
 )
 
 //The state machine executes this function during the UPGRADE
@@ -39,16 +39,16 @@ import (
 //
 func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
 	upgradeMsg.ApPropertyBlock = *dev.data.property
-	upgradeMsg.Assets = make([]msg.Assets, 0)
+	upgradeMsg.Assets = make([]msg.Asset, 0)
 
-	asset := msg.Assets{
+	asset := msg.Asset{
 		AssetName:    "sim",
 		AssetVersion: "1.1.1.1",
 		AssetType:    "FIRMWARE",
 	}
 	upgradeMsg.Assets = append(upgradeMsg.Assets, asset)
 
-	asset = msg.Assets{
+	asset = msg.Asset{
 		AssetName:    "cloud_connector",
 		AssetVersion: "3.3.2.1",
 		AssetType:    "XMOD",
@@ -80,15 +80,15 @@ func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
 //A list of ConnectorEvents:
 //The state machine sends these events to Extreme Control and
 //transitions to CONFIG.
-func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeResponse *msg.ImageUpgradeResponse) (ret ztp.DeviceReturnCode) {
+func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeResponse *msg.ImageUpgradeResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
 		log.Println(err)
-		return ztp.DeviceReturnRetry
+		return fsm.DeviceReturnRetry
 	}
 	switch resp.StatusCode {
 	case http.StatusOK:
 	default:
-		return ztp.DeviceReturnRetry
+		return fsm.DeviceReturnRetry
 	}
 	// platform updates assets in the upgradeResponse
 	msg.DumpJson(upgradeResponse)
@@ -102,9 +102,9 @@ func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeRespons
 			msg.DumpJson(image)
 		}
 	}
-	//  ztp.DeviceReturnOK - Upgrade is successful, continue
-	//  ztp.DeviceReturnRetry - something went wrong, ask to upgrade again
-	//  ztp.DeviceReturnFinish - Only upgrade, nothing more
-	//return ztp.DeviceReturnFinish
-	return ztp.DeviceReturnOK
+	//  fsm.DeviceReturnOK - Upgrade is successful, continue
+	//  fsm.DeviceReturnRetry - something went wrong, ask to upgrade again
+	//  fsm.DeviceReturnFinish - Only upgrade, nothing more
+	//return fsm.DeviceReturnFinish
+	return fsm.DeviceReturnOK
 }

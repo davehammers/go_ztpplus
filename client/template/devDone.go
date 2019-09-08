@@ -1,7 +1,7 @@
 package main
 
 import (
-//ztp "ztp/client"
+//fsm "ztp/client/fsm"
 )
 
 //The state machine executes this function prior to completion.
