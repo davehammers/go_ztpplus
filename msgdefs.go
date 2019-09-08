@@ -185,7 +185,7 @@ type ConfigBlock struct {
         } `json:"loginConfig,omitempty"`
     } `json:"logins,omitempty"`
     MacAuth struct {
-        Enabled       string `json:"enabled,omitempty"`
+        Enabled       bool `json:"enabled,omitempty"`
         MacAuthConfig []struct {
             MacAuthEnable bool   `json:"macAuthEnable,omitempty"`
             MacAuthPorts  string `json:"macAuthPorts,omitempty"`
@@ -209,11 +209,30 @@ type ConfigBlock struct {
         SysName       string   `json:"sysName,omitempty"`
         SysLocation   string   `json:"sysLocation,omitempty"`
         SysContact    string   `json:"sysContact,omitempty"`
-        Notifications []string `json:"notifications,omitempty"`
+        Notifications []struct{
+            Name                 string `json:"name,omitempty"`
+            Retries              int         `json:"retries,omitempty"`
+            ServerNetworkAddress string      `json:"serverNetworkAddress,omitempty"`
+            ServerUDPPort        int         `json:"serverUdpPort,omitempty"`
+            Timeout              int         `json:"timeout,omitempty"`
+            User                 struct {
+                AccessLevel     string `json:"accessLevel,omitempty"`
+                AuthPassword    string `json:"authPassword,omitempty"`
+                AuthType        string `json:"authType,omitempty"`
+                Name            string `json:"name,omitempty"`
+                PrivacyPassword string `json:"privacyPassword,omitempty"`
+                PrivacyType     string `json:"privacyType,omitempty"`
+                Security        string `json:"security,omitempty"`
+            } `json:"user,omitempty"`
+            Version string `json:"version,omitempty"`
+        } `json:"notifications,omitempty"`
         SnmpV1        struct {
             Enabled     bool     `json:"enabled,omitempty"`
             Logging     string   `json:"logging,omitempty"`
-            Communities []string `json:"communities,omitempty"`
+            Communities []struct {
+                AccessLevel string `json:"accessLevel"`
+                Name        string `json:"name"`
+            } `json:"communities"`
         } `json:"snmpV1,omitempty"`
         SnmpV3 struct {
             Enabled bool     `json:"enabled,omitempty"`
@@ -223,7 +242,10 @@ type ConfigBlock struct {
         SnmpV2C struct {
             Enabled     bool     `json:"enabled,omitempty"`
             Logging     string   `json:"logging,omitempty"`
-            Communities []string `json:"communities,omitempty"`
+            Communities []struct {
+                AccessLevel string `json:"accessLevel"`
+                Name        string `json:"name"`
+            } `json:"communities"`
         } `json:"snmpV2c,omitempty"`
     } `json:"snmp,omitempty"`
     SpanningTree struct {
@@ -257,7 +279,7 @@ type ConfigBlock struct {
             Name                string   `json:"name,omitempty"`
             NetworkAddress      string   `json:"networkAddress,omitempty"`
             NetworkPrefixLength int      `json:"networkPrefixLength,omitempty"`
-            TaggedEgressPorts   string   `json:"taggedEgressPorts,omitempty"`
+            TaggedEgressPorts   []string   `json:"taggedEgressPorts,omitempty"`
             UntaggedEgressPorts []string `json:"untaggedEgressPorts,omitempty"`
             VlanIds             string   `json:"vlanIds,omitempty"`
         } `json:"vlanConfig,omitempty"`
@@ -334,7 +356,7 @@ type ConfigBlock struct {
         } `json:"peers,omitempty"`
     } `json:"stack,omitempty"`
     Mvrp struct {
-        Enabled    string `json:"enabled,omitempty"`
+        Enabled    bool `json:"enabled,omitempty"`
         MvrpConfig []struct {
             MvrpEnable bool     `json:"mvrpEnable,omitempty"`
             MvrpPorts  []string `json:"mvrpPorts,omitempty"`

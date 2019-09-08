@@ -58,7 +58,29 @@ func NewDevice(devID string) (i fsm.Device) {
 
 	// These are the features implemented by the device
 	*dev.features = append(*dev.features, NewDevFeature())
+	*dev.features = append(*dev.features, NewDevConfigDownload())
+	*dev.features = append(*dev.features, NewDevDot1X())
+	*dev.features = append(*dev.features, NewDevLacp())
 	*dev.features = append(*dev.features, NewDevLicense())
+	*dev.features = append(*dev.features, NewDevLldp())
+	*dev.features = append(*dev.features, NewDevLogins())
+	*dev.features = append(*dev.features, NewDevMacAuth())
+	*dev.features = append(*dev.features, NewDevMlag())
+	*dev.features = append(*dev.features, NewDevMgmtAccess())
+	*dev.features = append(*dev.features, NewDevMvrp())
+	*dev.features = append(*dev.features, NewDevPoe())
+	*dev.features = append(*dev.features, NewDevPorts())
+	*dev.features = append(*dev.features, NewDevRadiusServers())
+	*dev.features = append(*dev.features, NewDevSnmp())
+	*dev.features = append(*dev.features, NewDevSpanningTree())
+	*dev.features = append(*dev.features, NewDevSyslog())
+	*dev.features = append(*dev.features, NewDevStacking())
+	*dev.features = append(*dev.features, NewDevTelemetry())
+	*dev.features = append(*dev.features, NewDevVlans())
+	*dev.features = append(*dev.features, NewDevVpex())
+	*dev.features = append(*dev.features, NewDevEee())
+	*dev.features = append(*dev.features, NewDevLocatorLed())
+	*dev.features = append(*dev.features, NewDevMlagv2())
 
 	i = dev
 	return
