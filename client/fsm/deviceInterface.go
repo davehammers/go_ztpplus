@@ -16,6 +16,7 @@ const (
 )
 
 type Device interface {
+	StartFSM()
 	Init()
 	Discover() *[]ZtpLookupEntry
 	DiscoverResponse(*http.Response, *ZtpLookupEntry) DeviceReturnCode

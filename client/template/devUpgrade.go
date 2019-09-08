@@ -35,10 +35,10 @@ import (
 //
 //RETRY
 //  Informs the state machine to wait a period of time, configurable
-//  via self.data.args.retry_interval.
 //
 func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
-	upgradeMsg.ApPropertyBlock = *dev.data.property
+	log.Printf("%#v\n", dev.property)
+	upgradeMsg.ApPropertyBlock = *dev.property
 	upgradeMsg.Assets = make([]msg.Asset, 0)
 
 	asset := msg.Asset{
@@ -71,7 +71,7 @@ func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
 //RETRY:
 //Causes the state machine to wait for a period of time before
 //retrying.  The application may modify
-//self.data.args.retry_interval to manipulate the wait time.
+//to manipulate the wait time.
 //
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to

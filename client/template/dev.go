@@ -14,25 +14,23 @@ import (
 type Feature interface {
 	getCapability(*msg.Capabilities) error
 	getConnect(*msg.Connect) error
-	getConfig(*msg.ConfigBlock) error
-	setConfig(*msg.ConfigBlock) error
+	getConfig(*msg.Configuration) error
+	setConfig(*msg.ConfigurationResponse) error
+	getStats(*msg.Stats) error
+	setStats(*msg.StatsResponse) error
 }
 
-// The Device defines the information required by the FSM to manage a ZTP device instance
-// Additional information may be added below the comment for a device specific implementtion.
-type DeviceData struct {
-	devID         string
-	fsm           *fsm.ZtpClient
-	controller    *fsm.ZtpLookupEntry
-	property      *msg.ApPropertyBlock // this block gets used in every message
-	capabilities  *msg.Capabilities
-	upgradeAssets []msg.Asset
-	events        []msg.Event
-
-	// add device specific data elements here
-}
+//The Device defines the information required by the FSM to manage a ZTP device instance
+//Additional information may be added below the comment for a device specific implementtion.
+//When adding additional fields to the Device struct, keep in mind this is a Go interface. The methods that implement the interface recieve a copy of this struct as it was created. To add data elements, they must be initialized pointers to some other memeory location. Updating the *pointer will update the provided memory location. Storing data directly in this struct after it has been created will have no effect.
 type Device struct {
-	data *DeviceData
+	devID      string               // device ID for this instance
+	fsm        *fsm.ZtpClient       // HTTP client instance
+	controller *fsm.ZtpLookupEntry  // created by device. controler DNS names
+	property   *msg.ApPropertyBlock // this block gets used in every message
+	events     *[]msg.Event         // dynamic list of events during runtime
+	features   *[]Feature           // each feature is added to this table
+	// add device specific data elements here
 }
 
 var (
@@ -43,22 +41,27 @@ var (
 //
 //The devID is the unique device identifier string provided to the controller.
 //The devID must be unique for all devices reporting to a single controller. Typically this is a serial number or a device MAC address.
-func NewDevice(devID string) Device {
+func NewDevice(devID string) (i fsm.Device) {
+	events := make([]msg.Event, 0)
+	features := make([]Feature, 0)
 	dev := Device{
-		data: &DeviceData{
-			devID:         devID,
-			property:      &msg.ApPropertyBlock{},
-			capabilities:  &msg.Capabilities{},
-			upgradeAssets: make([]msg.Asset, 0),
-			events:        make([]msg.Event, 0),
-			// new FSM for our device instance
-			fsm: fsm.NewZtpClient(),
-		},
+		devID:    devID,
+		property: &msg.ApPropertyBlock{},
+		events:   &events,
+		features: &features,
+		// new FSM for our device instance
+		fsm: fsm.NewZtpClient(),
 	}
-	dev.data.fsm.SetDeviceID(dev.data.devID)
-	dev.data.fsm.Device = dev
-	dev.data.fsm.SetDeviceType("switch")
-	return dev
+	dev.fsm.SetDeviceID(dev.devID)
+	dev.fsm.Device = dev
+	dev.fsm.SetDeviceType("switch")
+
+	// These are the features implemented by the device
+	*dev.features = append(*dev.features, NewDevFeature())
+	*dev.features = append(*dev.features, NewDevLicense())
+
+	i = dev
+	return
 }
 
 //This function allows the application to override the default
@@ -72,12 +75,11 @@ func (dev Device) GetSourceIP() {
 
 func (dev Device) StartFSM() {
 	// this function doesn't return until the FSM is completed
-	dev.data.fsm.StateMachine()
+	dev.fsm.StateMachine()
 }
 
 func (dev Device) AddAsset(asset *msg.Asset) {
 	msg.DumpJson(asset)
-	dev.data.upgradeAssets = append(dev.data.upgradeAssets, *asset)
 }
 
 func des3Encrypt(in string) (out string) {

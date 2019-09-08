@@ -10,9 +10,9 @@ import (
 //The state machine calls this function to fill in the stats message
 func (dev Device) Running(statsMsg *msg.Stats) {
 	// populate the stats message
-	statsMsg.ApPropertyBlock = *dev.data.property
-	statsMsg.Capabilities = *dev.data.capabilities
-	statsMsg.Assets = dev.data.upgradeAssets
+	statsMsg.ApPropertyBlock = *dev.property
+	//statsMsg.Capabilities = *dev.capabilities
+	//statsMsg.Assets = *dev.upgradeAssets
 	//statsMsg.UpgradeAsset
 	//statsMsg.ConfigBlock
 	//statsMsg.Cooling
@@ -36,7 +36,7 @@ func (dev Device) Running(statsMsg *msg.Stats) {
 //The state machine issues this function while in RUNNING.
 //
 //The rate of the functions is configurable by the application.  This
-//rate is stored in self.data.args.running_interval, which has a unit
+//rate is stored in which has a unit
 //type of seconds.
 //
 //The RUNNING state provides the application the ability to run
@@ -81,7 +81,7 @@ func (dev Device) RunningResponse(err error, resp *http.Response, statsResponseM
 		return fsm.DeviceReturnRestart
 	}
 	if statsResponseMsg.StatsInterval > 0 {
-		dev.data.fsm.SetRunningRetry(statsResponseMsg.StatsInterval)
+		dev.fsm.SetRunningRetry(statsResponseMsg.StatsInterval)
 	}
 	return fsm.DeviceReturnOK
 }

@@ -56,7 +56,7 @@ func main() {
 		devID = *deviceID
 	}
 	// using go routines, any number of device simulations can be created
-	for i := 1; i < 3; i++ {
+	for i := 1; i < 2; i++ {
 		d := fmt.Sprintf("%s-sim%d", devID, i)
 		wg.Add(1)
 		go func(devID string) {

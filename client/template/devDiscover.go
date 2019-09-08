@@ -55,6 +55,6 @@ func (dev Device) Discover() (controllerList *[]fsm.ZtpLookupEntry) {
 //Informs the state machine to wrap things up by transitioning to DONE.
 func (dev Device) DiscoverResponse(resp *http.Response, discoverResponseMsg *fsm.ZtpLookupEntry) (ret fsm.DeviceReturnCode) {
 	msg.DumpJson(discoverResponseMsg)
-	dev.data.controller = discoverResponseMsg
+	dev.controller = discoverResponseMsg
 	return fsm.DeviceReturnOK
 }

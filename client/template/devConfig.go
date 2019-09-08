@@ -11,16 +11,17 @@ import (
 //to the configuration REST API to the Extreme Control service.
 //
 //It is expected the application update its capabilities,
-//configuration, and portsInfo by modifying
-//self.data.ccsm.capabilities, self.data.ccsm.config_data,
-//and self.data.ccsm.ports_info_data respectively, if necessary.
+//configuration,
 //The state machine includes this data in the configuration REST
 //API request.
 func (dev Device) Config(config *msg.Configuration) {
 	// fill in the config message
-	config.ApPropertyBlock = *dev.data.property
-	config.Capabilities = *dev.data.capabilities
-	// config.ConfigBlock = the platform fills in the config block
+	config.ApPropertyBlock = *dev.property
+	for _, f := range *dev.features {
+		// call all of the feature routines to fill in the connect message
+		f.getCapability(&config.Capabilities)
+		f.getConfig(config)
+	}
 }
 
 //The state machine executes this function after receiving the
@@ -63,29 +64,12 @@ func (dev Device) ConfigResponse(err error, resp *http.Response, configResponse 
 		// got an unexpected HTTP code
 		return fsm.DeviceReturnAbort
 	}
-	msg.DumpJson(configResponse)
 
-	//configResponse.License
-	//configResponse.Poe
-	//configResponse.Dot1X
-	//configResponse.Lacp
-	//configResponse.Lldp
-	//configResponse.Logins
-	//configResponse.MacAuth
-	//configResponse.Ports
-	//configResponse.Snmp
-	//configResponse.SpanningTree
-	//configResponse.Syslog
-	//configResponse.Vlans
-	//configResponse.MgmtAccess
-	//configResponse.Appliance
-	//configResponse.MLag
-	//configResponse.MLagv2
-	//configResponse.Stack
-	//configResponse.Mvrp
-	//configResponse.Ospf
-	//configResponse.Timestamp
-	//configResponse.BpRequestID
-	//configResponse.Status
+	msg.DumpJson(configResponse)
+	for _, f := range *dev.features {
+		// call all of the feature routines to process the connect response
+		f.setConfig(configResponse)
+	}
+
 	return fsm.DeviceReturnOK
 }
