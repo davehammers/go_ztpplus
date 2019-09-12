@@ -35,32 +35,24 @@ func (zc *ZtpClient) Discover() (state ZtpClientState) {
 			log.Println(url + "discovery")
 		}
 		resp, err = zc.httpClient.Get(url + "discovery")
-		if err != nil {
-			log.Println(err)
-			continue
-		}
 
-		switch resp.StatusCode {
-		case http.StatusOK, http.StatusNotFound:
-			// discovery is successful
-			zc.Device.DiscoverResponse(resp, &hostPort)
-			// build up the URL prefix for all other message types
-			zc.urlPrefix = fmt.Sprintf("%s%s/%s/", url, zc.devType, zc.devID)
-			if DEBUG {
-				log.Println(zc.urlPrefix)
-			}
-			return ZtpStateConnect
-		default:
-			continue
-		}
+        // Tell the device
+        switch zc.Device.DiscoverResponse(err, resp, &hostPort) {
+        case DeviceReturnOK:
+            zc.urlPrefix = fmt.Sprintf("%s%s/%s/", url, zc.devType, zc.devID)
+            return ZtpStateConnect
+        case DeviceReturnRestart:
+            return ZtpStateReDiscoverPause
+        case DeviceReturnRetry:
+            continue
+        case DeviceReturnFinish:
+            return ZtpStateDone
+        case DeviceReturnAbort:
+            return ZtpStateReDiscoverPause
+        }
 	}
-	// discovery failed
-	switch zc.Device.DiscoverResponse(resp, nil) {
-	case DeviceReturnFinish:
-		return ZtpStateDone
-	}
-
-	return ZtpStateReDiscoverPause
+    zc.Device.DiscoverResponse(err, nil, nil)
+    return ZtpStateReDiscoverPause
 }
 
 func (zc *ZtpClient) ReDiscoverPause() (state ZtpClientState) {

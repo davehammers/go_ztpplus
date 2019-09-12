@@ -19,7 +19,7 @@ type Device interface {
 	StartFSM()
 	Init()
 	Discover() *[]ZtpLookupEntry
-	DiscoverResponse(*http.Response, *ZtpLookupEntry) DeviceReturnCode
+	DiscoverResponse(error, *http.Response, *ZtpLookupEntry) DeviceReturnCode
 	Connect(*msg.Connect)
 	ConnectResponse(error, *http.Response, *msg.ConnectResponse) DeviceReturnCode
 	Upgrade(*msg.ImageUpgrade)

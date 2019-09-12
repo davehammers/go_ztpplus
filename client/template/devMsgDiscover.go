@@ -53,8 +53,24 @@ func (dev Device) Discover() (controllerList *[]fsm.ZtpLookupEntry) {
 //
 //FINISH:
 //Informs the state machine to wrap things up by transitioning to DONE.
-func (dev Device) DiscoverResponse(resp *http.Response, discoverResponseMsg *fsm.ZtpLookupEntry) (ret fsm.DeviceReturnCode) {
+func (dev Device) DiscoverResponse(err error, resp *http.Response, discoverResponseMsg *fsm.ZtpLookupEntry) (ret fsm.DeviceReturnCode) {
+	if err != nil {
+		// usually an HTTP connectivity issue
+		log.Println(err)
+		return fsm.DeviceReturnRetry
+	}
+	if resp == nil {
+		// no host found
+		log.Println("No HOST found")
+		return fsm.DeviceReturnRestart
+	}
 	msg.DumpJson(discoverResponseMsg)
+	switch resp.StatusCode {
+	case http.StatusOK: // not sure how this happens since we are just determinine connectivity
+	case http.StatusNotFound:
+	default:
+		return fsm.DeviceReturnRetry // found something on HTTP but it doesn't like us
+	}
 	dev.controller = discoverResponseMsg
 	return fsm.DeviceReturnOK
 }

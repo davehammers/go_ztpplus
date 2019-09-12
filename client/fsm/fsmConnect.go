@@ -32,7 +32,6 @@ func (zc *ZtpClient) Connect() (state ZtpClientState) {
 	resp, body, err := zc.SendRequest(r)
 
 	if err != nil {
-		log.Println(err)
 		zc.Device.ConnectResponse(err, resp, nil)
 		return ZtpStateReDiscoverPause
 	}

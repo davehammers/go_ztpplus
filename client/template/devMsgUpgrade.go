@@ -37,7 +37,6 @@ import (
 //  Informs the state machine to wait a period of time, configurable
 //
 func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
-	log.Printf("%#v\n", dev.property)
 	upgradeMsg.ApPropertyBlock = *dev.property
 	upgradeMsg.Assets = make([]msg.Asset, 0)
 
@@ -83,6 +82,10 @@ func (dev Device) Upgrade(upgradeMsg *msg.ImageUpgrade) {
 func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeResponse *msg.ImageUpgradeResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
 		log.Println(err)
+		return fsm.DeviceReturnRetry
+	}
+	if resp == nil {
+		// didn't get a proper HTTP response
 		return fsm.DeviceReturnRetry
 	}
 	switch resp.StatusCode {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 	msg "ztp"
 	fsm "ztp/client/fsm"
 )
@@ -18,6 +19,7 @@ var (
 	deviceID     *string
 	debugCtrlrIP *string
 	pDebug       *bool
+	pNumSim      *int
 )
 
 func init() {
@@ -38,6 +40,7 @@ func flagSetup() {
 	pDebug = flag.Bool("debug", false, "enable debug")
 	deviceID = flag.String("d", "", "Device ID to use for this device")
 	debugCtrlrIP = flag.String("c", "", "Controller FQDN:port or IP:port")
+	pNumSim = flag.Int("sim", 0, "Number of additiona simulations of this device")
 	flag.Parse()
 	DEBUG = *pDebug
 	if DEBUG {
@@ -55,16 +58,20 @@ func main() {
 	if *deviceID != "" {
 		devID = *deviceID
 	}
+	// start the main instance
+	dev := NewDevice(devID, false)
+	wg.Add(1)
+	go dev.StartFSM()
 	// using go routines, any number of device simulations can be created
-	for i := 1; i < 2; i++ {
-		d := fmt.Sprintf("%s-sim%d", devID, i)
+	for i := 0; i < *pNumSim; i++ {
 		wg.Add(1)
-		go func(devID string) {
+		go func(i int) {
 			defer wg.Done()
-
-			dev := NewDevice(devID)
+			d := fmt.Sprintf("%s-sim%04d", devID, i+1)
+			dev := NewDevice(d, true)
 			dev.StartFSM()
-		}(d)
+		}(i)
+		time.Sleep(time.Millisecond * 200)
 	}
 	wg.Wait()
 }
