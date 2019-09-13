@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"runtime"
-    "net/http/httputil"
 )
 
 type UIErrorType struct {
@@ -66,24 +66,24 @@ func DumpJson(n interface{}) {
 }
 
 func DumpReqURL(r *http.Request) {
-    if !DEBUG {
-        return
-    }
-    log.Println(r.Method, r.URL.String())
+	if !DEBUG {
+		return
+	}
+	log.Println(r.Method, r.URL.String())
 }
 func DumpRequest(r *http.Request) {
-    if !DEBUG {
-        return
-    }
-    x,_ := httputil.DumpRequest(r, true)
-    log.Println(string(x))
+	if !DEBUG {
+		return
+	}
+	x, _ := httputil.DumpRequest(r, true)
+	log.Println(string(x))
 }
 func DumpResponse(resp *http.Response) {
-    if !DEBUG {
-        return
-    }
-    x,_ := httputil.DumpResponse(resp, true)
-    log.Println(string(x))
+	if !DEBUG {
+		return
+	}
+	x, _ := httputil.DumpResponse(resp, true)
+	log.Println(string(x))
 }
 
 // UIError - used for creating UI error responses by producting a standardized error reporting format

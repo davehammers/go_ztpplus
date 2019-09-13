@@ -88,7 +88,7 @@ func NewZtpClient() *ZtpClient {
 			ZtpStateDone:              (*ZtpClient).Done,
 		},
 		httpClient: &http.Client{
-			Timeout: time.Second * 60,
+			Timeout: time.Second * 20,
 			Transport: &http.Transport{
                 DisableKeepAlives: true,
                 MaxIdleConnsPerHost: 1,

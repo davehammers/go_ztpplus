@@ -71,7 +71,7 @@ func main() {
 			dev := NewDevice(d, true)
 			dev.StartFSM()
 		}(i)
-		time.Sleep(time.Millisecond * 200)
+		time.Sleep(time.Millisecond * 100)
 	}
 	wg.Wait()
 }
