@@ -20,7 +20,7 @@ func (dev Device) SendEvents(eventMsg *msg.EventMsg) (ret fsm.DeviceReturnCode) 
 }
 
 //The state machine issues this function when events have been sent to the controller
-//The device resets the event list to an empty list
+//The device reSets the event list to an empty list
 func (dev Device) SendEventsComplete() {
 	*dev.events = make([]msg.Event, 0)
 }

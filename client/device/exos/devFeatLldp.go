@@ -2,6 +2,7 @@ package main
 
 import (
 	msg "ztp"
+	"ztp/client/device"
 )
 
 //This is a feature definition template. The methods are required for all features and will be
@@ -13,47 +14,51 @@ import (
 type devLldp struct{}
 
 //Return an instance of the feature interface
-func NewDevLldp() (f Feature) {
+func NewDevLldp() (f device.Feature) {
 	f = devLldp{}
+	return
+}
+
+// feature collects and updates the device specific DB with config data
+func (p devLldp) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devLldp) GetDBStats() (err error) {
 	return
 }
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devLldp) getCapability(m *msg.Capabilities) (err error) {
-	m.Lldp.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
-func (p devLldp) getConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Lldp.<somefield> =
+func (p devLldp) GetConnect(m *msg.Connect) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devLldp) getConfig(m *msg.Configuration) (err error) {
+func (p devLldp) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Lldp.FeatureAvailable = true
 	//m.ConfigBlock.Lldp.<somefield> = ""
 	return
 }
 
 //update the feature information from the informatin received from the controller
-func (p devLldp) setConfig(m *msg.ConfigurationResponse) (err error) {
+func (p devLldp) SetConfig(m *msg.ConfigurationResponse) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devLldp) getStats(m *msg.Stats) (err error) {
+func (p devLldp) GetStats(m *msg.Stats) (err error) {
 	//m.ConfigBlock.Lldp.<somefield> = ""
 	return
 }
 
 //update the feature information from the information received from the controller
-func (p devLldp) setStats(m *msg.StatsResponse) (err error) {
-	// create a config response to pass to the setConfig function
+func (p devLldp) SetStats(m *msg.StatsResponse) (err error) {
+	// create a config response to pass to the SetConfig function
 	c := msg.ConfigurationResponse{}
 	c.ConfigBlock = m.ConfigBlock
-	err = p.setConfig(&c)
+	err = p.SetConfig(&c)
 
 	return
 }

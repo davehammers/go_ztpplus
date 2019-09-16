@@ -11,7 +11,7 @@ import (
 //phase.  The function is issued prior to sending the upgradeimage
 //REST API request to the Extreme Control service.
 //
-//If the application desires to upgrade software assets under its
+//If the application desires to upgrade software asSets under its
 //control, it MUST populate the UpgradeAssets list.
 //Entries in this list MUST be an AssetEntry type.
 //
@@ -26,7 +26,7 @@ import (
 //  function, keeping the state machine in the UPGRADE phase.
 //  The application would use this function to maintain that state
 //  until the upgrade of the application is complete.  Once complete,
-//  the application updates the asset's version information reported
+//  the application updates the asSet's version information reported
 //  to the Extreme Control service and returns OK.
 //
 //OK
@@ -85,7 +85,7 @@ func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeRespons
 		return fsm.DeviceReturnRetry
 	}
 	if resp == nil {
-		// didn't get a proper HTTP response
+		// didn't Get a proper HTTP response
 		return fsm.DeviceReturnRetry
 	}
 	switch resp.StatusCode {
@@ -93,7 +93,7 @@ func (dev Device) UpgradeResponse(err error, resp *http.Response, upgradeRespons
 	default:
 		return fsm.DeviceReturnRetry
 	}
-	// platform updates assets in the upgradeResponse
+	// platform updates asSets in the upgradeResponse
 	msg.DumpJson(upgradeResponse)
 	for _, image := range upgradeResponse.ImageUpgradeBlock {
 		if image.Upgrade {

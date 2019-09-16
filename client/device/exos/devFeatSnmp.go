@@ -2,6 +2,7 @@ package main
 
 import (
 	msg "ztp"
+	"ztp/client/device"
 )
 
 //This is a feature definition template. The methods are required for all features and will be
@@ -13,49 +14,53 @@ import (
 type devSnmp struct{}
 
 //Return an instance of the feature interface
-func NewDevSnmp() (f Feature) {
+func NewDevSnmp() (f device.Feature) {
 	f = devSnmp{}
+	return
+}
+
+// feature collects and updates the device specific DB with config data
+func (p devSnmp) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devSnmp) GetDBStats() (err error) {
 	return
 }
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devSnmp) getCapability(m *msg.Capabilities) (err error) {
-	m.Snmp.SnmpV1.FeatureAvailable = true
-	m.Snmp.SnmpV2C.FeatureAvailable = true
-	m.Snmp.SnmpV3.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
-func (p devSnmp) getConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Snmp.<somefield> =
+func (p devSnmp) GetConnect(m *msg.Connect) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devSnmp) getConfig(m *msg.Configuration) (err error) {
+func (p devSnmp) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Snmp.SnmpV1.FeatureAvailable = true
+	m.Capabilities.Snmp.SnmpV2C.FeatureAvailable = true
+	m.Capabilities.Snmp.SnmpV3.FeatureAvailable = true
 	//m.ConfigBlock.Snmp.<somefield> = ""
 	return
 }
 
 //update the feature information from the informatin received from the controller
-func (p devSnmp) setConfig(m *msg.ConfigurationResponse) (err error) {
+func (p devSnmp) SetConfig(m *msg.ConfigurationResponse) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devSnmp) getStats(m *msg.Stats) (err error) {
+func (p devSnmp) GetStats(m *msg.Stats) (err error) {
 	//m.ConfigBlock.Snmp.<somefield> = ""
 	return
 }
 
 //update the feature information from the information received from the controller
-func (p devSnmp) setStats(m *msg.StatsResponse) (err error) {
-	// create a config response to pass to the setConfig function
+func (p devSnmp) SetStats(m *msg.StatsResponse) (err error) {
+	// create a config response to pass to the SetConfig function
 	c := msg.ConfigurationResponse{}
 	c.ConfigBlock = m.ConfigBlock
-	err = p.setConfig(&c)
+	err = p.SetConfig(&c)
 
 	return
 }

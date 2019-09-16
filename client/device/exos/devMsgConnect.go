@@ -40,7 +40,7 @@ func (dev Device) Connect(connectMsg *msg.Connect) {
 	connectMsg.DeviceInfo.MgmtPort = "0"
 	for _, f := range *dev.features {
 		// call all of the feature routines to fill in the connect message
-		f.getConnect(connectMsg)
+		f.GetConnect(connectMsg)
 	}
 
 	// use initial constant for auth
@@ -58,11 +58,13 @@ func (dev Device) Connect(connectMsg *msg.Connect) {
 //The state machine transitions to UPGRADE.
 func (dev Device) ConnectResponse(err error, resp *http.Response, connectResponse *msg.ConnectResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
-		log.Println(err)
+		if DEBUG {
+			log.Println(err)
+		}
 		return fsm.DeviceReturnRestart
 	}
 	switch resp.StatusCode {
-	case http.StatusOK:
+	case http.StatusOK, http.StatusCreated:
 	default:
 		if int(resp.StatusCode/100) == 4 { //http 400's
 			return fsm.DeviceReturnRetry

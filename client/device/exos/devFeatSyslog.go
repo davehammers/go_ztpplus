@@ -2,6 +2,7 @@ package main
 
 import (
 	msg "ztp"
+	"ztp/client/device"
 )
 
 //This is a feature definition template. The methods are required for all features and will be
@@ -13,47 +14,51 @@ import (
 type devSyslog struct{}
 
 //Return an instance of the feature interface
-func NewDevSyslog() (f Feature) {
+func NewDevSyslog() (f device.Feature) {
 	f = devSyslog{}
+	return
+}
+
+// feature collects and updates the device specific DB with config data
+func (p devSyslog) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devSyslog) GetDBStats() (err error) {
 	return
 }
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devSyslog) getCapability(m *msg.Capabilities) (err error) {
-	m.Syslog.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
-func (p devSyslog) getConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Syslog.<somefield> =
+func (p devSyslog) GetConnect(m *msg.Connect) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devSyslog) getConfig(m *msg.Configuration) (err error) {
+func (p devSyslog) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Syslog.FeatureAvailable = true
 	//m.ConfigBlock.Syslog.<somefield> = ""
 	return
 }
 
 //update the feature information from the informatin received from the controller
-func (p devSyslog) setConfig(m *msg.ConfigurationResponse) (err error) {
+func (p devSyslog) SetConfig(m *msg.ConfigurationResponse) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devSyslog) getStats(m *msg.Stats) (err error) {
+func (p devSyslog) GetStats(m *msg.Stats) (err error) {
 	//m.ConfigBlock.Syslog.<somefield> = ""
 	return
 }
 
 //update the feature information from the information received from the controller
-func (p devSyslog) setStats(m *msg.StatsResponse) (err error) {
-	// create a config response to pass to the setConfig function
+func (p devSyslog) SetStats(m *msg.StatsResponse) (err error) {
+	// create a config response to pass to the SetConfig function
 	c := msg.ConfigurationResponse{}
 	c.ConfigBlock = m.ConfigBlock
-	err = p.setConfig(&c)
+	err = p.SetConfig(&c)
 
 	return
 }

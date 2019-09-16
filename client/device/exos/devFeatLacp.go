@@ -2,6 +2,7 @@ package main
 
 import (
 	msg "ztp"
+	"ztp/client/device"
 )
 
 //This is a feature definition template. The methods are required for all features and will be
@@ -13,47 +14,51 @@ import (
 type devLacp struct{}
 
 //Return an instance of the feature interface
-func NewDevLacp() (f Feature) {
+func NewDevLacp() (f device.Feature) {
 	f = devLacp{}
+	return
+}
+
+// feature collects and updates the device specific DB with config data
+func (p devLacp) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devLacp) GetDBStats() (err error) {
 	return
 }
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devLacp) getCapability(m *msg.Capabilities) (err error) {
-	m.Lacp.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
-func (p devLacp) getConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Lacp.<somefield> =
+func (p devLacp) GetConnect(m *msg.Connect) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devLacp) getConfig(m *msg.Configuration) (err error) {
+func (p devLacp) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Lacp.FeatureAvailable = true
 	//m.ConfigBlock.Lacp.<somefield> = ""
 	return
 }
 
 //update the feature information from the informatin received from the controller
-func (p devLacp) setConfig(m *msg.ConfigurationResponse) (err error) {
+func (p devLacp) SetConfig(m *msg.ConfigurationResponse) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devLacp) getStats(m *msg.Stats) (err error) {
+func (p devLacp) GetStats(m *msg.Stats) (err error) {
 	//m.ConfigBlock.Lacp.<somefield> = ""
 	return
 }
 
 //update the feature information from the information received from the controller
-func (p devLacp) setStats(m *msg.StatsResponse) (err error) {
-	// create a config response to pass to the setConfig function
+func (p devLacp) SetStats(m *msg.StatsResponse) (err error) {
+	// create a config response to pass to the SetConfig function
 	c := msg.ConfigurationResponse{}
 	c.ConfigBlock = m.ConfigBlock
-	err = p.setConfig(&c)
+	err = p.SetConfig(&c)
 
 	return
 }

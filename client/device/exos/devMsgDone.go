@@ -7,7 +7,7 @@ import (
 //The state machine executes this function prior to completion.
 //
 //The state machine does not perform any actions by default.  The
-//application may set self.data.args.delete to True to cause the
+//application may Set self.data.args.delete to True to cause the
 //state machine to send a delete REST API request in order to
 //remove the application's object from the Extreme Control service.
 //

@@ -10,7 +10,7 @@ import (
 	fsm "ztp/client/fsm"
 )
 
-// Environment variable fsmclientDEBUG=1 sets the package DEBUG=true
+// Environment variable fsmclientDEBUG=1 Sets the package DEBUG=true
 const EnvDebug = "fsmDEBUG"
 
 //DEBUG can be used during development to output log messages
@@ -71,7 +71,7 @@ func main() {
 			dev := NewDevice(d, true)
 			dev.StartFSM()
 		}(i)
-		time.Sleep(time.Millisecond * 200)
+		time.Sleep(time.Millisecond * 100)
 	}
 	wg.Wait()
 }

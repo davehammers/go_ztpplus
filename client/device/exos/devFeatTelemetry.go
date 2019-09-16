@@ -2,6 +2,7 @@ package main
 
 import (
 	msg "ztp"
+	"ztp/client/device"
 )
 
 //This is a feature definition template. The methods are required for all features and will be
@@ -13,47 +14,51 @@ import (
 type devTelemetry struct{}
 
 //Return an instance of the feature interface
-func NewDevTelemetry() (f Feature) {
+func NewDevTelemetry() (f device.Feature) {
 	f = devTelemetry{}
+	return
+}
+
+// feature collects and updates the device specific DB with config data
+func (p devTelemetry) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devTelemetry) GetDBStats() (err error) {
 	return
 }
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devTelemetry) getCapability(m *msg.Capabilities) (err error) {
-	m.Telemetry.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
-func (p devTelemetry) getConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Telemetry.<somefield> =
+func (p devTelemetry) GetConnect(m *msg.Connect) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devTelemetry) getConfig(m *msg.Configuration) (err error) {
+func (p devTelemetry) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Telemetry.FeatureAvailable = true
 	//m.ConfigBlock.Telemetry.<somefield> = ""
 	return
 }
 
 //update the feature information from the informatin received from the controller
-func (p devTelemetry) setConfig(m *msg.ConfigurationResponse) (err error) {
+func (p devTelemetry) SetConfig(m *msg.ConfigurationResponse) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devTelemetry) getStats(m *msg.Stats) (err error) {
+func (p devTelemetry) GetStats(m *msg.Stats) (err error) {
 	//m.ConfigBlock.Telemetry.<somefield> = ""
 	return
 }
 
 //update the feature information from the information received from the controller
-func (p devTelemetry) setStats(m *msg.StatsResponse) (err error) {
-	// create a config response to pass to the setConfig function
+func (p devTelemetry) SetStats(m *msg.StatsResponse) (err error) {
+	// create a config response to pass to the SetConfig function
 	c := msg.ConfigurationResponse{}
 	c.ConfigBlock = m.ConfigBlock
-	err = p.setConfig(&c)
+	err = p.SetConfig(&c)
 
 	return
 }
