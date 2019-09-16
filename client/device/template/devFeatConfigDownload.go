@@ -19,6 +19,16 @@ func NewDevConfigDownload() (f device.Feature) {
 	return
 }
 
+// feature collects and updates the device specific DB with config data
+func (p devConfigDownload) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devConfigDownload) GetDBStats() (err error) {
+	return
+}
+
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
 func (p devConfigDownload) GetConnect(m *msg.Connect) (err error) {

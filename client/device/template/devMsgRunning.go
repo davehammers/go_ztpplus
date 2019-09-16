@@ -9,28 +9,21 @@ import (
 
 //The state machine calls this function to fill in the stats message
 func (dev Device) Running(statsMsg *msg.Stats) {
+	if !dev.simulation {
+		// call the feature DB loaders to populate the device specific DB
+		// Simulations all use the real devices information
+		for _, f := range *dev.features {
+			f.GetDBConfig()
+			f.GetDBStats()
+		}
+	}
 	// populate the stats message
 	statsMsg.ApPropertyBlock = *dev.property
 	statsMsg.Capabilities = *dev.capabilities
-	//statsMsg.Assets = *dev.upgradeAssets
-	//statsMsg.UpgradeAsset
-	//statsMsg.ConfigBlock
-	//statsMsg.Cooling
-	//statsMsg.IfTable
-	//statsMsg.PortsInfo
-	//statsMsg.PowerSupply
-	//statsMsg.Temperatue
-	//statsMsg.Telemetry
-	//statsMsg.IetfVxlanVxlan
-	//statsMsg.IetfVxlanVxlanState
-	//statsMsg.CPUUtilization
-	//statsMsg.MemoryUtilization
-	//statsMsg.Mlagv2
-	//statsMsg.Timestamp
-	//statsMsg.SysUpTime
-	//statsMsg.CheckInTime
-	//statsMsg.UpgradeTime
-
+	for _, f := range *dev.features {
+		// call all of the feature routines to fill in the connect message
+		f.GetStats(statsMsg)
+	}
 }
 
 //The state machine issues this function while in RUNNING.
@@ -82,6 +75,10 @@ func (dev Device) RunningResponse(err error, resp *http.Response, statsResponseM
 	}
 	if statsResponseMsg.StatsInterval > 0 {
 		dev.fsm.SetRunningRetry(statsResponseMsg.StatsInterval)
+	}
+	for _, f := range *dev.features {
+		// call all of the feature routines to fill in the connect message
+		f.SetStats(statsResponseMsg)
 	}
 	return fsm.DeviceReturnOK
 }

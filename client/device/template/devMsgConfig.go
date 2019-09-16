@@ -15,6 +15,13 @@ import (
 //The state machine includes this data in the configuration REST
 //API request.
 func (dev Device) Config(config *msg.Configuration) {
+	if !dev.simulation {
+		// call the feature DB loaders to populate the device specific DB
+		// Simulations all use the real devices information
+		for _, f := range *dev.features {
+			f.GetDBConfig()
+		}
+	}
 	// fill in the config message
 	config.ApPropertyBlock = *dev.property
 	for _, f := range *dev.features {

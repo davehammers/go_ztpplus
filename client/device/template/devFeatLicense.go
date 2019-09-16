@@ -12,6 +12,16 @@ func NewDevLicense() (f device.Feature) {
 	return
 }
 
+// feature collects and updates the device specific DB with config data
+func (p devLicense) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devLicense) GetDBStats() (err error) {
+	return
+}
+
 func (p devLicense) GetConnect(m *msg.Connect) (err error) {
 	m.DeviceInfo.License.FeaturePacks = make([]msg.FeaturePack, 0)
 	m.DeviceInfo.License.PortCapacityLicense = ""

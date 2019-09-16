@@ -19,6 +19,16 @@ func NewDevSyslog() (f device.Feature) {
 	return
 }
 
+// feature collects and updates the device specific DB with config data
+func (p devSyslog) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devSyslog) GetDBStats() (err error) {
+	return
+}
+
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
 func (p devSyslog) GetConnect(m *msg.Connect) (err error) {

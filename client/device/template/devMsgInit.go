@@ -15,4 +15,12 @@ package main
 //A return code of OK, and the state machine transitions
 //to DISCOVER.
 func (dev Device) Init() {
+	if !dev.simulation {
+		// at startup, call the feature DB loaders to populate the device specific DB
+		// Simulations all use the real devices information
+		for _, f := range *dev.features {
+			f.GetDBConfig()
+			f.GetDBStats()
+		}
+	}
 }

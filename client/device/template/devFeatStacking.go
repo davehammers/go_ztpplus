@@ -19,6 +19,16 @@ func NewDevStacking() (f device.Feature) {
 	return
 }
 
+// feature collects and updates the device specific DB with config data
+func (p devStacking) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devStacking) GetDBStats() (err error) {
+	return
+}
+
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
 func (p devStacking) GetConnect(m *msg.Connect) (err error) {

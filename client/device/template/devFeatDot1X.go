@@ -19,6 +19,16 @@ func NewDevDot1X() (f device.Feature) {
 	return
 }
 
+// feature collects and updates the device specific DB with config data
+func (p devDot1X) GetDBConfig() (err error) {
+	return
+}
+
+// feature collects and updates the device specific DB with config statistics data
+func (p devDot1X) GetDBStats() (err error) {
+	return
+}
+
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
 func (p devDot1X) GetConnect(m *msg.Connect) (err error) {
