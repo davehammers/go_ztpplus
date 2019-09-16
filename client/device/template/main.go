@@ -10,7 +10,7 @@ import (
 	fsm "ztp/client/fsm"
 )
 
-// Environment variable fsmclientDEBUG=1 sets the package DEBUG=true
+// Environment variable fsmclientDEBUG=1 Sets the package DEBUG=true
 const EnvDebug = "fsmDEBUG"
 
 //DEBUG can be used during development to output log messages

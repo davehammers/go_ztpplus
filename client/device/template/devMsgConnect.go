@@ -40,7 +40,7 @@ func (dev Device) Connect(connectMsg *msg.Connect) {
 	connectMsg.DeviceInfo.MgmtPort = "0"
 	for _, f := range *dev.features {
 		// call all of the feature routines to fill in the connect message
-		f.getConnect(connectMsg)
+		f.GetConnect(connectMsg)
 	}
 
 	// use initial constant for auth

@@ -6,7 +6,7 @@ package main
 //The application performs any initialization it may require to
 //support the execution of the state machine.
 //
-//The state machine adds the fsm client to the upgrade asset
+//The state machine adds the fsm client to the upgrade asSet
 //list.
 //
 //The application SHOULD populate the TBD

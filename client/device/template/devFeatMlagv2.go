@@ -2,6 +2,7 @@ package main
 
 import (
 	msg "ztp"
+	"ztp/client/device"
 )
 
 //This is a feature definition template. The methods are required for all features and will be
@@ -13,47 +14,47 @@ import (
 type devMlagv2 struct{}
 
 //Return an instance of the feature interface
-func NewDevMlagv2() (f Feature) {
+func NewDevMlagv2() (f device.Feature) {
 	f = devMlagv2{}
 	return
 }
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devMlagv2) getCapability(m *msg.Capabilities) (err error) {
+func (p devMlagv2) GetCapability(m *msg.Capabilities) (err error) {
 	m.Mlagv2.FeatureAvailable = true
 	return
 }
 
 //Update any feature informatino in the Connect message
-func (p devMlagv2) getConnect(m *msg.Connect) (err error) {
+func (p devMlagv2) GetConnect(m *msg.Connect) (err error) {
 	//m.DeviceInfo.Mlagv2.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devMlagv2) getConfig(m *msg.Configuration) (err error) {
+func (p devMlagv2) GetConfig(m *msg.Configuration) (err error) {
 	//m.ConfigBlock.Mlagv2.<somefield> = ""
 	return
 }
 
 //update the feature information from the informatin received from the controller
-func (p devMlagv2) setConfig(m *msg.ConfigurationResponse) (err error) {
+func (p devMlagv2) SetConfig(m *msg.ConfigurationResponse) (err error) {
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
-func (p devMlagv2) getStats(m *msg.Stats) (err error) {
+func (p devMlagv2) GetStats(m *msg.Stats) (err error) {
 	//m.ConfigBlock.Mlagv2.<somefield> = ""
 	return
 }
 
 //update the feature information from the information received from the controller
-func (p devMlagv2) setStats(m *msg.StatsResponse) (err error) {
-	// create a config response to pass to the setConfig function
+func (p devMlagv2) SetStats(m *msg.StatsResponse) (err error) {
+	// create a config response to pass to the SetConfig function
 	c := msg.ConfigurationResponse{}
 	c.ConfigBlock = m.ConfigBlock
-	err = p.setConfig(&c)
+	err = p.SetConfig(&c)
 
 	return
 }

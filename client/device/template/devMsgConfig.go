@@ -19,8 +19,8 @@ func (dev Device) Config(config *msg.Configuration) {
 	config.ApPropertyBlock = *dev.property
 	for _, f := range *dev.features {
 		// call all of the feature routines to fill in the connect message
-		f.getCapability(&config.Capabilities)
-		f.getConfig(config)
+		f.GetCapability(&config.Capabilities)
+		f.GetConfig(config)
 	}
 }
 
@@ -68,7 +68,7 @@ func (dev Device) ConfigResponse(err error, resp *http.Response, configResponse 
 	msg.DumpJson(configResponse)
 	for _, f := range *dev.features {
 		// call all of the feature routines to process the connect response
-		f.setConfig(configResponse)
+		f.SetConfig(configResponse)
 	}
 
 	return fsm.DeviceReturnOK
