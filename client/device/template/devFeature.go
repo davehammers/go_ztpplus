@@ -21,14 +21,8 @@ func NewDevFeature() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devFeature) GetCapability(m *msg.Capabilities) (err error) {
-	//m.Feature.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devFeature) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Feature.<somefield> =
+	//m.Capabilities.Feature.FeatureAvailable = true
 	return
 }
 

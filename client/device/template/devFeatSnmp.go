@@ -21,21 +21,15 @@ func NewDevSnmp() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devSnmp) GetCapability(m *msg.Capabilities) (err error) {
-	m.Snmp.SnmpV1.FeatureAvailable = true
-	m.Snmp.SnmpV2C.FeatureAvailable = true
-	m.Snmp.SnmpV3.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devSnmp) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Snmp.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devSnmp) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Snmp.SnmpV1.FeatureAvailable = true
+	m.Capabilities.Snmp.SnmpV2C.FeatureAvailable = true
+	m.Capabilities.Snmp.SnmpV3.FeatureAvailable = true
 	//m.ConfigBlock.Snmp.<somefield> = ""
 	return
 }

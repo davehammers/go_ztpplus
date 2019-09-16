@@ -21,19 +21,13 @@ func NewDevMvrp() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devMvrp) GetCapability(m *msg.Capabilities) (err error) {
-	m.Mvrp.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devMvrp) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Mvrp.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devMvrp) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Mvrp.FeatureAvailable = true
 	//m.ConfigBlock.Mvrp.<somefield> = ""
 	return
 }

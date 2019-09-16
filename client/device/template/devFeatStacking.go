@@ -21,19 +21,13 @@ func NewDevStacking() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devStacking) GetCapability(m *msg.Capabilities) (err error) {
-	m.Stacking.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devStacking) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Stacking.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devStacking) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Stacking.FeatureAvailable = true
 	//m.ConfigBlock.Stacking.<somefield> = ""
 	return
 }

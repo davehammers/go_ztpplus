@@ -21,19 +21,13 @@ func NewDevMacAuth() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devMacAuth) GetCapability(m *msg.Capabilities) (err error) {
-	m.MacAuth.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devMacAuth) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.MacAuth.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devMacAuth) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.MacAuth.FeatureAvailable = true
 	//m.ConfigBlock.MacAuth.<somefield> = ""
 	return
 }

@@ -19,8 +19,9 @@ func (dev Device) Config(config *msg.Configuration) {
 	config.ApPropertyBlock = *dev.property
 	for _, f := range *dev.features {
 		// call all of the feature routines to fill in the connect message
-		f.GetCapability(&config.Capabilities)
 		f.GetConfig(config)
+		// save capabilities
+		*dev.capabilities = config.Capabilities
 	}
 }
 

@@ -21,19 +21,13 @@ func NewDevLocatorLed() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devLocatorLed) GetCapability(m *msg.Capabilities) (err error) {
-	m.LocatorLed.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devLocatorLed) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.LocatorLed.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devLocatorLed) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.LocatorLed.FeatureAvailable = true
 	//m.ConfigBlock.LocatorLed.<somefield> = ""
 	return
 }

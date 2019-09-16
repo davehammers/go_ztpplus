@@ -21,19 +21,13 @@ func NewDevPoe() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devPoe) GetCapability(m *msg.Capabilities) (err error) {
-	m.Poe.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devPoe) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Poe.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devPoe) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Poe.FeatureAvailable = true
 	//m.ConfigBlock.Poe.<somefield> = ""
 	return
 }

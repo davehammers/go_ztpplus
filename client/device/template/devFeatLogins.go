@@ -21,19 +21,13 @@ func NewDevLogins() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devLogins) GetCapability(m *msg.Capabilities) (err error) {
-	m.Logins.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devLogins) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Logins.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devLogins) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Logins.FeatureAvailable = true
 	//m.ConfigBlock.Logins.<somefield> = ""
 	return
 }

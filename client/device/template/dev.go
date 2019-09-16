@@ -15,13 +15,14 @@ import (
 //Additional information may be added below the comment for a device specific implementtion.
 //When adding additional fields to the Device struct, keep in mind this is a Go interface. The methods that implement the interface recieve a copy of this struct as it was created. To add data elements, they must be initialized pointers to some other memeory location. Updating the *pointer will update the provided memory location. Storing data directly in this struct after it has been created will have no effect.
 type Device struct {
-	devID      string               // device ID for this instance
-	simulation bool                 // true if simulating multiple devices
-	fsm        *fsm.ZtpClient       // HTTP client instance
-	controller *fsm.ZtpLookupEntry  // created by device. controler DNS names
-	property   *msg.ApPropertyBlock // this block Gets used in every message
-	events     *[]msg.Event         // dynamic list of events during runtime
-	features   *[]device.Feature    // each feature is added to this table
+	devID        string               // device ID for this instance
+	simulation   bool                 // true if simulating multiple devices
+	fsm          *fsm.ZtpClient       // HTTP client instance
+	controller   *fsm.ZtpLookupEntry  // created by device. controler DNS names
+	property     *msg.ApPropertyBlock // this block Gets used in every message
+	capabilities *msg.Capabilities    // this block Gets used in multiple messages
+	events       *[]msg.Event         // dynamic list of events during runtime
+	features     *[]device.Feature    // each feature is added to this table
 	// add device specific data elements here
 }
 
@@ -37,11 +38,12 @@ func NewDevice(devID string, simulation bool) (i fsm.Device) {
 	events := make([]msg.Event, 0)
 	features := make([]device.Feature, 0)
 	dev := Device{
-		devID:      devID,
-		simulation: simulation,
-		property:   &msg.ApPropertyBlock{},
-		events:     &events,
-		features:   &features,
+		devID:        devID,
+		simulation:   simulation,
+		property:     &msg.ApPropertyBlock{},
+		capabilities: &msg.Capabilities{},
+		events:       &events,
+		features:     &features,
 		// new FSM for our device instance
 		fsm: fsm.NewZtpClient(),
 	}

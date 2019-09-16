@@ -21,19 +21,13 @@ func NewDevMlag() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devMlag) GetCapability(m *msg.Capabilities) (err error) {
-	m.Mlag.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devMlag) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Mlag.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devMlag) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Mlag.FeatureAvailable = true
 	//m.ConfigBlock.Mlag.<somefield> = ""
 	return
 }

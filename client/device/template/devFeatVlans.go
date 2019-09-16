@@ -21,19 +21,13 @@ func NewDevVlans() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devVlans) GetCapability(m *msg.Capabilities) (err error) {
-	m.Vlans.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devVlans) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Vlans.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devVlans) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Vlans.FeatureAvailable = true
 	//m.ConfigBlock.Vlans.<somefield> = ""
 	return
 }

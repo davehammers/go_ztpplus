@@ -11,7 +11,7 @@ import (
 func (dev Device) Running(statsMsg *msg.Stats) {
 	// populate the stats message
 	statsMsg.ApPropertyBlock = *dev.property
-	//statsMsg.Capabilities = *dev.capabilities
+	statsMsg.Capabilities = *dev.capabilities
 	//statsMsg.Assets = *dev.upgradeAssets
 	//statsMsg.UpgradeAsset
 	//statsMsg.ConfigBlock

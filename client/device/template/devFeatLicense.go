@@ -12,11 +12,6 @@ func NewDevLicense() (f device.Feature) {
 	return
 }
 
-func (p devLicense) GetCapability(m *msg.Capabilities) (err error) {
-	m.License.FeatureAvailable = true
-	return
-}
-
 func (p devLicense) GetConnect(m *msg.Connect) (err error) {
 	m.DeviceInfo.License.FeaturePacks = make([]msg.FeaturePack, 0)
 	m.DeviceInfo.License.PortCapacityLicense = ""
@@ -27,6 +22,7 @@ func (p devLicense) GetConnect(m *msg.Connect) (err error) {
 	return
 }
 func (p devLicense) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.License.FeatureAvailable = true
 	m.ConfigBlock.License.SystemLicense = ""
 	m.ConfigBlock.License.EffectiveLevel = ""
 	m.ConfigBlock.License.FeaturePacks = make([]msg.FeaturePack, 0)

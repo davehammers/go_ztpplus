@@ -21,19 +21,13 @@ func NewDevVpex() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devVpex) GetCapability(m *msg.Capabilities) (err error) {
-	m.Vpex.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devVpex) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Vpex.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devVpex) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Vpex.FeatureAvailable = true
 	//m.ConfigBlock.Vpex.<somefield> = ""
 	return
 }

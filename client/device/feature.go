@@ -6,7 +6,6 @@ import (
 
 //This interface defines the functions that every feature must implement
 type Feature interface {
-	GetCapability(*msg.Capabilities) error
 	GetConnect(*msg.Connect) error
 	GetConfig(*msg.Configuration) error
 	SetConfig(*msg.ConfigurationResponse) error

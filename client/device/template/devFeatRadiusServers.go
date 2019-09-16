@@ -21,19 +21,13 @@ func NewDevRadiusServers() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devRadiusServers) GetCapability(m *msg.Capabilities) (err error) {
-	m.RadiusServers.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devRadiusServers) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.RadiusServers.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devRadiusServers) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.RadiusServers.FeatureAvailable = true
 	//m.ConfigBlock.RadiusServers.<somefield> = ""
 	return
 }

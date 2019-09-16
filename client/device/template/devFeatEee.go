@@ -21,19 +21,13 @@ func NewDevEee() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devEee) GetCapability(m *msg.Capabilities) (err error) {
-	m.Eee.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devEee) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Eee.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devEee) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Eee.FeatureAvailable = true
 	//m.ConfigBlock.Eee.<somefield> = ""
 	return
 }

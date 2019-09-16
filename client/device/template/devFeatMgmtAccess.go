@@ -21,22 +21,16 @@ func NewDevMgmtAccess() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devMgmtAccess) GetCapability(m *msg.Capabilities) (err error) {
-	m.MgmtAccess.Telnet.FeatureAvailable = true
-	m.MgmtAccess.SSH.FeatureAvailable = true
-	m.MgmtAccess.HTTP.FeatureAvailable = true
-	m.MgmtAccess.HTTPS.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devMgmtAccess) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.MgmtAccess.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devMgmtAccess) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.MgmtAccess.Telnet.FeatureAvailable = true
+	m.Capabilities.MgmtAccess.SSH.FeatureAvailable = true
+	m.Capabilities.MgmtAccess.HTTP.FeatureAvailable = true
+	m.Capabilities.MgmtAccess.HTTPS.FeatureAvailable = true
 	//m.ConfigBlock.MgmtAccess.<somefield> = ""
 	return
 }

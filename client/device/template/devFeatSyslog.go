@@ -21,19 +21,13 @@ func NewDevSyslog() (f device.Feature) {
 
 //Update the feature capability in the Capabilities part of a message
 //The feature should update any fields necessary to represent it's capabilities
-func (p devSyslog) GetCapability(m *msg.Capabilities) (err error) {
-	m.Syslog.FeatureAvailable = true
-	return
-}
-
-//Update any feature informatino in the Connect message
 func (p devSyslog) GetConnect(m *msg.Connect) (err error) {
-	//m.DeviceInfo.Syslog.<somefield> =
 	return
 }
 
 //Update the feature informaiton in the Configuration message before it is sent to the controller
 func (p devSyslog) GetConfig(m *msg.Configuration) (err error) {
+	m.Capabilities.Syslog.FeatureAvailable = true
 	//m.ConfigBlock.Syslog.<somefield> = ""
 	return
 }
