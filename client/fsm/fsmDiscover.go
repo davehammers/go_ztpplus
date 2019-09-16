@@ -36,23 +36,23 @@ func (zc *ZtpClient) Discover() (state ZtpClientState) {
 		}
 		resp, err = zc.httpClient.Get(url + "discovery")
 
-        // Tell the device
-        switch zc.Device.DiscoverResponse(err, resp, &hostPort) {
-        case DeviceReturnOK:
-            zc.urlPrefix = fmt.Sprintf("%s%s/%s/", url, zc.devType, zc.devID)
-            return ZtpStateConnect
-        case DeviceReturnRestart:
-            return ZtpStateReDiscoverPause
-        case DeviceReturnRetry:
-            continue
-        case DeviceReturnFinish:
-            return ZtpStateDone
-        case DeviceReturnAbort:
-            return ZtpStateReDiscoverPause
-        }
+		// Tell the device
+		switch zc.Device.DiscoverResponse(err, resp, &hostPort) {
+		case DeviceReturnOK:
+			zc.urlPrefix = fmt.Sprintf("%s%s/%s/", url, zc.devType, zc.devID)
+			return ZtpStateConnect
+		case DeviceReturnRestart:
+			return ZtpStateReDiscoverPause
+		case DeviceReturnRetry:
+			continue
+		case DeviceReturnFinish:
+			return ZtpStateDone
+		case DeviceReturnAbort:
+			return ZtpStateReDiscoverPause
+		}
 	}
-    zc.Device.DiscoverResponse(err, nil, nil)
-    return ZtpStateReDiscoverPause
+	zc.Device.DiscoverResponse(err, nil, nil)
+	return ZtpStateReDiscoverPause
 }
 
 func (zc *ZtpClient) ReDiscoverPause() (state ZtpClientState) {

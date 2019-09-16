@@ -90,9 +90,9 @@ func NewZtpClient() *ZtpClient {
 		httpClient: &http.Client{
 			Timeout: time.Second * 20,
 			Transport: &http.Transport{
-                DisableKeepAlives: true,
-                MaxIdleConnsPerHost: 1,
-                MaxConnsPerHost: 1,
+				DisableKeepAlives:   true,
+				MaxIdleConnsPerHost: 1,
+				MaxConnsPerHost:     1,
 				TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
 			},
 		},
@@ -180,26 +180,26 @@ func (zc *ZtpClient) SendRequest(r *http.Request) (resp *http.Response, body *[]
 	r.Header.Add("Content-type", "application/json")
 	msg.DumpReqURL(r)
 	//msg.DumpRequest(r)
-    r.Close = true
+	r.Close = true
 	resp, err = zc.httpClient.Do(r)
 
 	if err != nil {
-        if DEBUG {
-            log.Println(err)
-        }
+		if DEBUG {
+			log.Println(err)
+		}
 	} else {
 		//msg.DumpResponse(resp)
 		var i interface{}
-        if DEBUG {
-            log.Println("HTTP Response code", resp.StatusCode)
-            json.NewDecoder(resp.Body).Decode(&i)
-        }
-        resp.Body.Close()
+		if DEBUG {
+			log.Println("HTTP Response code", resp.StatusCode)
+			json.NewDecoder(resp.Body).Decode(&i)
+		}
+		resp.Body.Close()
 		b, err := json.Marshal(i)
 		if err == nil {
-            if DEBUG {
-                log.Println(string(b))
-            }
+			if DEBUG {
+				log.Println(string(b))
+			}
 			body = &b
 		}
 	}
