@@ -382,83 +382,102 @@ type Asset struct {
 	AssetVersion string `json:"assetVersion,omitempty"`
 	AssetType    string `json:"assetType,omitempty"`
 }
+type LLDPport struct {
+	PortName string `json:"portName,omitempty"`
+	Lldp     struct {
+		PortID             string `json:"portId,omitempty"`
+		SystemName         string `json:"systemName,omitempty"`
+		MgmtAddress        string `json:"mgmtAddress,omitempty"`
+		ChassisID          string `json:"chassisId,omitempty"`
+		SystemCapabilities string `json:"systemCapabilities,omitempty"`
+	} `json:"lldp,omitempty"`
+}
 
 // C O N N E C T
 type Connect struct {
 	ApPropertyBlock ApPropertyBlock `json:"apPropertyBlock,omitempty"`
-	DeviceInfo      struct {
-		SysDescr        string `json:"sysDescr,omitempty"`
-		SysUpTime       int    `json:"sysUpTime,omitempty"`
-		SysContact      string `json:"sysContact,omitempty"`
-		SysName         string `json:"sysName,omitempty"`
-		SysObjectID     string `json:"sysObjectID,omitempty"`
-		OperatingSystem string `json:"operatingSystem,omitempty"`
-		SerialNumber    string `json:"serialNumber,omitempty"`
-		MacAddr         string `json:"macAddr,omitempty"`
-		MgmtIPAddr      string `json:"mgmtIpAddr,omitempty"`
-		MgmtPort        string `json:"mgmtPort,omitempty"`
-		License         struct {
-			FeaturePacks        []FeaturePack `json:"featurePacks,omitempty"`
-			PortCapacityLicense string        `json:"portCapacityLicense,omitempty"`
-			EffectiveLicense    string        `json:"effectiveLicense,omitempty"`
-			EnabledLicense      string        `json:"enabledLicense,omitempty"`
-			SystemLicense       string        `json:"systemLicense,omitempty"`
-			EffectiveLevel      string        `json:"effectiveLevel,omitempty"`
-		} `json:"license,omitempty"`
-		Ports []struct {
-			PortType  string   `json:"portType,omitempty"`
-			PortSpeed int      `json:"portSpeed,omitempty"`
-			PortList  []string `json:"portList,omitempty"`
-		} `json:"ports,omitempty"`
-		IfTable []struct {
-			IfIndex           int    `json:"ifIndex,omitempty"`
-			IfName            string `json:"ifName,omitempty"`
-			IfDescr           string `json:"ifDescr,omitempty"`
-			IfType            int    `json:"ifType,omitempty"`
-			IfOutDiscards     int    `json:"ifOutDiscards,omitempty"`
-			IfAdminStatus     int    `json:"ifAdminStatus,omitempty"`
-			IfMtu             int    `json:"ifMtu,omitempty"`
-			IfInDiscards      int    `json:"ifInDiscards,omitempty"`
-			IfInErrors        int    `json:"ifInErrors,omitempty"`
-			IfOperStatus      int    `json:"ifOperStatus,omitempty"`
-			IfOutUcastPkts    int    `json:"ifOutUcastPkts,omitempty"`
-			IfInOctets        int    `json:"ifInOctets,omitempty"`
-			IfLastChange      int    `json:"ifLastChange,omitempty"`
-			IfPhysAddress     string `json:"ifPhysAddress,omitempty"`
-			IfInUcastPkts     int    `json:"ifInUcastPkts,omitempty"`
-			IfSpecific        string `json:"ifSpecific,omitempty"`
-			IfOutNUcastPkts   int    `json:"ifOutNUcastPkts,omitempty"`
-			IfOutQLen         int    `json:"ifOutQLen,omitempty"`
-			IfSpeed           int    `json:"ifSpeed,omitempty"`
-			IfOutOctets       int    `json:"ifOutOctets,omitempty"`
-			IfInUnknownProtos int    `json:"ifInUnknownProtos,omitempty"`
-			IfInNUcastPkts    int    `json:"ifInNUcastPkts,omitempty"`
-			IfOutErrors       int    `json:"ifOutErrors,omitempty"`
-		} `json:"ifTable,omitempty"`
-		PortsInfo []struct {
-			PortName string `json:"portName,omitempty"`
-			Lldp     struct {
-				PortID             string `json:"portId,omitempty"`
-				SystemName         string `json:"systemName,omitempty"`
-				MgmtAddress        string `json:"mgmtAddress,omitempty"`
-				ChassisID          string `json:"chassisId,omitempty"`
-				SystemCapabilities string `json:"systemCapabilities,omitempty"`
-			} `json:"lldp,omitempty"`
-		} `json:"portsInfo,omitempty"`
-	} `json:"deviceInfo,omitempty"`
+	DeviceInfo      DeviceInfo      `json:"deviceInfo,omitempty"`
+}
+type License struct {
+	FeaturePacks        []string `json:"featurePacks,omitempty"`
+	PortCapacityLicense string   `json:"portCapacityLicense,omitempty"`
+	EffectiveLicense    string   `json:"effectiveLicense,omitempty"`
+	EnabledLicense      string   `json:"enabledLicense,omitempty"`
+	SystemLicense       string   `json:"systemLicense,omitempty"`
+	EffectiveLevel      string   `json:"effectiveLevel,omitempty"`
+}
+type Ports struct {
+	PortType  string   `json:"portType,omitempty"`
+	PortSpeed int      `json:"portSpeed,omitempty"`
+	PortList  []string `json:"portList,omitempty"`
+}
+type IfTable struct {
+	IfIndex           int    `json:"ifIndex,omitempty"`
+	IfName            string `json:"ifName,omitempty"`
+	IfDescr           string `json:"ifDescr,omitempty"`
+	IfType            int    `json:"ifType,omitempty"`
+	IfOutDiscards     int    `json:"ifOutDiscards,omitempty"`
+	IfAdminStatus     int    `json:"ifAdminStatus,omitempty"`
+	IfMtu             int    `json:"ifMtu,omitempty"`
+	IfInDiscards      int    `json:"ifInDiscards,omitempty"`
+	IfInErrors        int    `json:"ifInErrors,omitempty"`
+	IfOperStatus      int    `json:"ifOperStatus,omitempty"`
+	IfOutUcastPkts    int    `json:"ifOutUcastPkts,omitempty"`
+	IfInOctets        int    `json:"ifInOctets,omitempty"`
+	IfLastChange      int    `json:"ifLastChange,omitempty"`
+	IfPhysAddress     string `json:"ifPhysAddress,omitempty"`
+	IfInUcastPkts     int    `json:"ifInUcastPkts,omitempty"`
+	IfSpecific        string `json:"ifSpecific,omitempty"`
+	IfOutNUcastPkts   int    `json:"ifOutNUcastPkts,omitempty"`
+	IfOutQLen         int    `json:"ifOutQLen,omitempty"`
+	IfSpeed           int    `json:"ifSpeed,omitempty"`
+	IfOutOctets       int    `json:"ifOutOctets,omitempty"`
+	IfInUnknownProtos int    `json:"ifInUnknownProtos,omitempty"`
+	IfInNUcastPkts    int    `json:"ifInNUcastPkts,omitempty"`
+	IfOutErrors       int    `json:"ifOutErrors,omitempty"`
+}
+type Lldp struct {
+	PortID             string `json:"portId,omitempty"`
+	SystemName         string `json:"systemName,omitempty"`
+	MgmtAddress        string `json:"mgmtAddress,omitempty"`
+	ChassisID          string `json:"chassisId,omitempty"`
+	SystemCapabilities string `json:"systemCapabilities,omitempty"`
+}
+type PortsInfo struct {
+	PortName string `json:"portName,omitempty"`
+	Lldp     Lldp   `json:"lldp,omitempty"`
+}
+type DeviceInfo struct {
+	SysDescr        string      `json:"sysDescr,omitempty"`
+	SysUpTime       int         `json:"sysUpTime,omitempty"`
+	SysContact      string      `json:"sysContact,omitempty"`
+	SysName         string      `json:"sysName,omitempty"`
+	SysObjectID     string      `json:"sysObjectID,omitempty"`
+	OperatingSystem string      `json:"operatingSystem,omitempty"`
+	SerialNumber    string      `json:"serialNumber,omitempty"`
+	MacAddr         string      `json:"macAddr,omitempty"`
+	MgmtIPAddr      string      `json:"mgmtIpAddr,omitempty"`
+	MgmtPort        string      `json:"mgmtPort,omitempty"`
+	License         License     `json:"license,omitempty"`
+	Ports           []Ports     `json:"ports,omitempty"`
+	IfTable         []IfTable   `json:"ifTable,omitempty"`
+	PortsInfo       []PortsInfo `json:"portsInfo,omitempty"`
 }
 
 type ConnectResponse struct {
 	Action        string `json:"action,omitempty"`
 	StandyTimeout int    `json:"standyTimeout,omitempty"`
-	Credentials   struct {
-		Login    string `json:"login,omitempty"`
-		Password string `json:"password,omitempty"`
-	} `json:"credentials,omitempty"`
-	Redirect struct {
-		Type string `json:"type,omitempty"`
-		URI  string `json:"uri,omitempty"`
-	} `json:"redirect,omitempty"`
+	//Credentials   []Credentials `json:"credentials,omitempty"`
+	Credentials Credentials `json:"credentials,omitempty"`
+	Redirect    Redirect    `json:"redirect,omitempty"`
+}
+type Credentials struct {
+	Login    string `json:"login,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+type Redirect struct {
+	Type string `json:"type,omitempty"`
+	URI  string `json:"uri,omitempty"`
 }
 
 // I M A G E U P G R A D E

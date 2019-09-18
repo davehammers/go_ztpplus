@@ -23,7 +23,7 @@ func (p devLicense) GetDBStats() (err error) {
 }
 
 func (p devLicense) GetConnect(m *msg.Connect) (err error) {
-	m.DeviceInfo.License.FeaturePacks = make([]msg.FeaturePack, 0)
+	m.DeviceInfo.License.FeaturePacks = make([]string, 0)
 	m.DeviceInfo.License.PortCapacityLicense = ""
 	m.DeviceInfo.License.EffectiveLicense = ""
 	m.DeviceInfo.License.EnabledLicense = ""

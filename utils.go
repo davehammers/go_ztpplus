@@ -3,12 +3,14 @@ package ztp
 
 import (
 	"compress/gzip"
+	"encoding/hex"
 	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"runtime"
+	"strings"
 )
 
 type UIErrorType struct {
@@ -132,4 +134,28 @@ func SendGzipJson(w http.ResponseWriter, data interface{}) {
 	g := gzip.NewWriter(w)
 	json.NewEncoder(g).Encode(data)
 	g.Close()
+}
+
+//Decode a string "3a:27:44" into an ASCII string.
+//This input string format is sometimes used to encode SNMP data
+func DecodeHexString(in string) (out string) {
+	parts := strings.Split(in, ":")
+	outB, err := hex.DecodeString(strings.Join(parts, ""))
+	if err != nil {
+		return ""
+	}
+	out = string(outB)
+	return
+}
+
+//Encode a string into "xx:xx:xx:xx". The colon separated hex format is sometimes used for SNMP reporting
+//E.g. "8:51" returns "38:3a:35:31"
+func EncodeHexString(in string) (out string) {
+	buf := make([]string, 0)
+	encodedStr := hex.EncodeToString([]byte(in))
+	for idx := 0; idx < len(encodedStr); idx += 2 {
+		buf = append(buf, encodedStr[idx:idx+2])
+	}
+	out = strings.Join(buf, ":")
+	return
 }

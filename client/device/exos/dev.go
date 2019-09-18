@@ -52,7 +52,7 @@ func NewDevice(devID string, simulation bool) (i fsm.Device) {
 	dev.fsm.SetDeviceType("switch")
 
 	// These are the features implemented by the device
-	*dev.features = append(*dev.features, NewDevFeature())
+	*dev.features = append(*dev.features, NewDevFeatInit())
 	*dev.features = append(*dev.features, NewDevConfigDownload())
 	*dev.features = append(*dev.features, NewDevDot1X())
 	*dev.features = append(*dev.features, NewDevLacp())

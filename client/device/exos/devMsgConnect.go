@@ -20,28 +20,13 @@ import (
 //CONNECT_OK or CONNECT_FAIL function as a result of the connection
 //attempt.
 func (dev Device) Connect(connectMsg *msg.Connect) {
-	*dev.property = msg.ApPropertyBlock{
-		RuSerialNumber: dev.devID,
-		BpWiredMacaddr: "00:04:96:9B:B7:E8",
-		RuSwVersion:    "1.2.3.4",
-		RuModel:        "sim-template",
-	}
-	connectMsg.ApPropertyBlock = *dev.property
-
-	connectMsg.DeviceInfo.SysDescr = "template simulation for fsm"
-	connectMsg.DeviceInfo.SysUpTime = 128706300
-	connectMsg.DeviceInfo.SysContact = "https://www.extremenetworks.com/support/"
-	connectMsg.DeviceInfo.SysName = connectMsg.ApPropertyBlock.RuModel
-	connectMsg.DeviceInfo.SysObjectID = "1.3.6.1.4.1.1916.2.195"
-	connectMsg.DeviceInfo.OperatingSystem = "ExtremeXOS"
-	connectMsg.DeviceInfo.SerialNumber = dev.devID
-	connectMsg.DeviceInfo.MacAddr = connectMsg.ApPropertyBlock.BpWiredMacaddr
-	connectMsg.DeviceInfo.MgmtIPAddr = "10.10.10.1"
-	connectMsg.DeviceInfo.MgmtPort = "0"
 	for _, f := range *dev.features {
 		// call all of the feature routines to fill in the connect message
 		f.GetConnect(connectMsg)
 	}
+
+	// save the property block for the other message types
+	*dev.property = connectMsg.ApPropertyBlock
 
 	// use initial constant for auth
 	userName := des3Encrypt("ezconfiguser")
@@ -56,7 +41,7 @@ func (dev Device) Connect(connectMsg *msg.Connect) {
 //successful in connecting to the controller.
 
 //The state machine transitions to UPGRADE.
-func (dev Device) ConnectResponse(err error, resp *http.Response, connectResponse *msg.ConnectResponse) (ret fsm.DeviceReturnCode) {
+func (dev Device) ConnectResponse(err error, resp *http.Response, m *msg.ConnectResponse) (ret fsm.DeviceReturnCode) {
 	if err != nil {
 		if DEBUG {
 			log.Println(err)
@@ -72,11 +57,11 @@ func (dev Device) ConnectResponse(err error, resp *http.Response, connectRespons
 		log.Println("response code", resp.StatusCode)
 		return fsm.DeviceReturnRestart
 	}
-	msg.DumpJson(connectResponse)
+	msg.DumpJson(m)
 	// if new auth is provided, decode the login/password provided
-	if connectResponse.Credentials.Login != "" && connectResponse.Credentials.Password != "" {
-		login := des3Decrypt(connectResponse.Credentials.Login)
-		password := des3Decrypt(connectResponse.Credentials.Password)
+	if m.Credentials.Login != "" && m.Credentials.Password != "" {
+		login := des3Decrypt(m.Credentials.Login)
+		password := des3Decrypt(m.Credentials.Password)
 		// trim 3 characters from either side of the password
 		login = des3Encrypt(login[3 : len(login)-3])
 		password = des3Encrypt(password[3 : len(password)-3])
@@ -85,16 +70,16 @@ func (dev Device) ConnectResponse(err error, resp *http.Response, connectRespons
 		dev.fsm.SetPassword(password)
 	}
 
-	connectResponse.Credentials.Login = "hidden"
-	connectResponse.Credentials.Password = "hidden"
-	msg.DumpJson(connectResponse)
+	m.Credentials.Login = "hidden"
+	m.Credentials.Password = "hidden"
+	msg.DumpJson(m)
 
 	// is there a redirected to a different controller
 	// ignore case when comparing strings
-	if strings.EqualFold(connectResponse.Action, "redirect") {
-		if strings.EqualFold(connectResponse.Redirect.Type, "https") {
-			if connectResponse.Redirect.URI != "" {
-				dev.fsm.SetRedirect(connectResponse.Redirect.URI)
+	if strings.EqualFold(m.Action, "redirect") {
+		if strings.EqualFold(m.Redirect.Type, "https") {
+			if m.Redirect.URI != "" {
+				dev.fsm.SetRedirect(m.Redirect.URI)
 				return fsm.DeviceReturnRetry
 			}
 		}

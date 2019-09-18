@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 	msg "ztp"
@@ -17,6 +18,7 @@ const EnvDebug = "fsmDEBUG"
 var (
 	DEBUG        = false
 	deviceID     *string
+	devIP        *string
 	debugCtrlrIP *string
 	pDebug       *bool
 	pNumSim      *int
@@ -39,6 +41,7 @@ func envSetup() {
 func flagSetup() {
 	pDebug = flag.Bool("debug", false, "enable debug")
 	deviceID = flag.String("d", "", "Device ID to use for this device")
+	devIP = flag.String("devip", "", "Device IP address when running remotely from the device")
 	debugCtrlrIP = flag.String("c", "", "Controller FQDN:port or IP:port")
 	pNumSim = flag.Int("sim", 0, "Number of additiona simulations of this device")
 	flag.Parse()
@@ -54,7 +57,11 @@ func main() {
 	// Get device ID from the device.
 	// Here we just code a string for the template
 	// override with any command line debug
-	devID := "12345-67890"
+	SetExosIO(*devIP)
+	f := NewDevFeatInit()
+	f.GetDBConfig()
+	parts := strings.Fields(dm_sysCommon.Data[0].ExtremeSystemID)
+	devID := parts[1]
 	if *deviceID != "" {
 		devID = *deviceID
 	}
